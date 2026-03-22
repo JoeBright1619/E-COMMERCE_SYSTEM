@@ -1,0 +1,10 @@
+body { min-height: 100vh; display: flex; flex-direction: column; }
+.page-header { background-image: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0.2)); }
+.card-img-top { object-fit: cover; height: 220px; }
+.product-image { max-height: 420px; object-fit: cover; width: 100%; }
+footer { margin-top: auto; }
+
+/* small responsive tweaks */
+@media (max-width: 576px) {
+  .card-img-top { height: 160px; }
+}
