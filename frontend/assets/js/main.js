@@ -1,9 +1,9 @@
 // Minimal frontend logic for prototype cart in localStorage
 const PRODUCTS = {
-  "1": { id: 1, title: 'Classic Sneakers', price: 69.00, desc: 'Comfortable everyday sneakers in multiple colors.' },
-  "2": { id: 2, title: 'Minimal Watch', price: 129.00, desc: 'Timeless design with a leather strap.' },
-  "3": { id: 3, title: 'Leather Backpack', price: 179.00, desc: 'Durable leather backpack for work and travel.' },
-  "4": { id: 4, title: 'Wireless Headphones', price: 219.00, desc: 'Noise-cancelling with long battery life.' }
+  "1": { id: 1, title: 'Classic Sneakers', price: 69.00, desc: 'Comfortable everyday sneakers in multiple colors.', category: 'apparel' },
+  "2": { id: 2, title: 'Minimal Watch', price: 129.00, desc: 'Timeless design with a leather strap.', category: 'accessories' },
+  "3": { id: 3, title: 'Leather Backpack', price: 179.00, desc: 'Durable leather backpack for work and travel.', category: 'bags' },
+  "4": { id: 4, title: 'Wireless Headphones', price: 219.00, desc: 'Noise-cancelling with long battery life.', category: 'electronics' }
 };
 
 function getCart() {
@@ -11,13 +11,60 @@ function getCart() {
 }
 function saveCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); }
 
+// Auth helpers
+function getUser() {
+  try { return JSON.parse(localStorage.getItem('cagura_user') || 'null'); } catch(e) { return null; }
+}
+function setUser(user) {
+  localStorage.setItem('cagura_user', JSON.stringify(user));
+  renderAuthLinks();
+}
+function logoutUser() {
+  localStorage.removeItem('cagura_user');
+  renderAuthLinks();
+}
+
+function renderAuthLinks() {
+  const container = document.getElementById('auth-links');
+  if (!container) return;
+  const user = getUser();
+  if (user && user.name) {
+    container.innerHTML = `
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">${escapeHtml(user.name)}</a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+          <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+          <li><a class="dropdown-item" href="#" id="logout-link">Logout</a></li>
+        </ul>
+      </div>
+    `;
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) logoutLink.addEventListener('click', (e) => { e.preventDefault(); logoutUser(); });
+  } else {
+    container.innerHTML = `
+      <div class="d-flex gap-2">
+        <a class="btn btn-sm btn-outline-light" href="login.html">Login</a>
+        <a class="btn btn-sm btn-light" href="register.html">Register</a>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]; });
+}
+
 function addToCart(productId, qty=1) {
   const cart = getCart();
   cart[productId] = (cart[productId] || 0) + qty;
   saveCart(cart);
-  alert('Added to cart');
+  // small UI feedback
+  const brand = document.querySelector('.navbar-brand');
+  if (brand) brand.classList.add('text-success');
+  setTimeout(() => brand && brand.classList.remove('text-success'), 400);
 }
 
+// product details rendering
 function renderProductDetails() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id') || '1';
@@ -36,6 +83,7 @@ function renderProductDetails() {
     const qtyInput = document.getElementById('qty');
     const qty = Math.max(1, parseInt(qtyInput.value || '1'));
     addToCart(id, qty);
+    alert(`${p.title} added to cart`);
   });
 }
 
@@ -113,11 +161,79 @@ function placeOrder() {
   location.href = 'index.html';
 }
 
-// auto-run functions depending on page contents
+// NEW: filtering/searching
+function updateVisibleCount() {
+  const visible = document.querySelectorAll('#products-grid .product-card:not([hidden])').length;
+  const el = document.getElementById('visible-count');
+  if (el) el.textContent = visible;
+}
+
+function applyFilters() {
+  const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+  const activeCatBtn = document.querySelector('#category-filter .btn.active');
+  const cat = activeCatBtn ? activeCatBtn.dataset.cat : 'all';
+  document.querySelectorAll('#products-grid .product-card').forEach(card => {
+    const title = (card.dataset.title || '').toLowerCase();
+    const category = (card.dataset.category || 'all');
+    let matches = true;
+    if (cat && cat !== 'all' && category !== cat) matches = false;
+    if (q && !title.includes(q)) matches = false;
+    card.hidden = !matches;
+  });
+  updateVisibleCount();
+}
+
+// Auth form handlers (login/register pages)
+function handleLoginForm(e) {
+  if (e) e.preventDefault();
+  const nameInput = document.getElementById('login-name');
+  const emailInput = document.getElementById('login-email');
+  const name = (nameInput?.value || emailInput?.value || 'Guest').trim();
+  setUser({ name });
+  // allow access to whoever — redirect to home
+  location.href = 'index.html';
+}
+
+function handleRegisterForm(e) {
+  if (e) e.preventDefault();
+  // In prototype, simply create user and redirect to login
+  const nameInput = document.getElementById('reg-name');
+  const emailInput = document.getElementById('reg-email');
+  const name = (nameInput?.value || emailInput?.value || 'Guest').trim();
+  alert('Registration successful (prototype). You can now login.');
+  location.href = 'login.html';
+}
+
+// sanitize simple input for display
+
 window.addEventListener('DOMContentLoaded', () => {
   renderProductDetails();
   renderCartPage();
   renderCheckoutSummary();
+  renderAuthLinks();
   const placeBtn = document.getElementById('place-order');
   if (placeBtn) placeBtn.addEventListener('click', (e) => { e.preventDefault(); placeOrder(); });
+
+  // search
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => applyFilters());
+  }
+  // category buttons
+  document.querySelectorAll('#category-filter .btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('#category-filter .btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  // attach login/register forms if present
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) loginForm.addEventListener('submit', handleLoginForm);
+  const regForm = document.getElementById('register-form');
+  if (regForm) regForm.addEventListener('submit', handleRegisterForm);
+
+  // initial filter application
+  applyFilters();
 });

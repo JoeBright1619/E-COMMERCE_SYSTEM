@@ -1,8 +1,18 @@
-body { min-height: 100vh; display: flex; flex-direction: column; }
-.page-header { background-image: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0.2)); }
-.card-img-top { object-fit: cover; height: 220px; }
+:root{
+  --brand:#6f42c1; /* purple-ish */
+  --muted:#6c757d;
+}
+body { min-height: 100vh; display: flex; flex-direction: column; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+.page-header { background-image: linear-gradient(120deg, rgba(111,66,193,0.06), rgba(111,66,193,0.02)); }
+.card-img-top { object-fit: cover; height: 220px; transition: transform .25s ease; }
+.card:hover .card-img-top{ transform: scale(1.03); }
 .product-image { max-height: 420px; object-fit: cover; width: 100%; }
-footer { margin-top: auto; }
+footer { margin-top: auto; background: linear-gradient(90deg, #222, #111); }
+
+.btn-brand { background: var(--brand); color: #fff; border: 0; }
+.btn-brand-outline { color: var(--brand); border-color: var(--brand); }
+
+.container small { color: var(--muted); }
 
 /* small responsive tweaks */
 @media (max-width: 576px) {

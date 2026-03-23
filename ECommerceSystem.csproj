@@ -152,7 +152,9 @@
     <Content Include="frontend\cart.html" />
     <Content Include="frontend\checkout.html" />
     <Content Include="frontend\index.html" />
+    <Content Include="frontend\login.html" />
     <Content Include="frontend\product.html" />
+    <Content Include="frontend\register.html" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
