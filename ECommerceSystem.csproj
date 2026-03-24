@@ -144,9 +144,6 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="favicon.ico" />
-    <Content Include="frontend-prototype\index.html" />
-    <Content Include="frontend-prototype\script.js" />
-    <Content Include="frontend-prototype\styles.css" />
     <Content Include="frontend\assets\css\styles.css" />
     <Content Include="frontend\assets\js\main.js" />
     <Content Include="frontend\cart.html" />
@@ -163,7 +160,6 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="frontend-prototype\README.md" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />

@@ -10,7 +10,8 @@
   <body>
     <nav class="navbar navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="index.html">CAGURA</a>
+        <a class="navbar-brand" href="index.html">CAGURA.com</a>
+        <div id="auth-links" class="ms-auto"></div>
       </div>
     </nav>
 
@@ -20,17 +21,23 @@
           <div class="card shadow-sm">
             <div class="card-body">
               <h4 class="card-title">Login</h4>
-              <form id="login-form">
+              <form id="login-form" novalidate>
                 <div class="mb-3">
-                  <label class="form-label">Name (any)</label>
-                  <input id="login-name" class="form-control" placeholder="Jane Doe">
+                  <label for="login-username" class="form-label">Username</label>
+                  <input id="login-username" name="username" class="form-control" placeholder="Enter your username" autocomplete="username">
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Email</label>
-                  <input id="login-email" type="email" class="form-control" placeholder="you@example.com">
+                  <label for="login-password" class="form-label">Password</label>
+                  <input id="login-password" name="password" type="password" class="form-control" placeholder="Enter your password" autocomplete="current-password">
                 </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <a href="register.html" class="btn btn-link">Register</a>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="remember-me">
+                  <label class="form-check-label" for="remember-me">Remember me</label>
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">Login</button>
+                  <a href="register.html" class="btn btn-link">Register</a>
+                </div>
               </form>
             </div>
           </div>
