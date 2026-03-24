@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile — CAGURA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">CAGURA.com</a>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="cart.html">Cart</a></li>
+            <li class="nav-item"><a class="nav-link" href="checkout.html">Checkout</a></li>
+          </ul>
+            <div class="d-flex align-items-center ms-3">
+          <a href="profile.html" class="nav-link text-light p-0 me-2" title="Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M13.468 12.37C12.758 11.226 11.59 10.5 10 10.5H6c-1.59 0-2.758.726-3.468 1.87A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z"/>
+              <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+              <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1z"/>
+            </svg>
+          </a>
+          <div id="auth-links"></div>
+        </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container my-5">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <img src="https://picsum.photos/seed/avatar/160/160" class="rounded-circle" alt="Avatar">
+              </div>
+              <h5 id="profile-name">Guest</h5>
+              <p id="profile-email" class="text-muted small">-</p>
+              <a href="login.html" id="profile-edit" class="btn btn-outline-primary btn-sm">Edit profile</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <h5>Account details</h5>
+              <dl class="row">
+                <dt class="col-sm-3">Name</dt>
+                <dd id="acc-name" class="col-sm-9">Guest</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd id="acc-email" class="col-sm-9">-</dd>
+
+                <dt class="col-sm-3">Member since</dt>
+                <dd id="acc-member" class="col-sm-9">—</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5>Order history</h5>
+              <p class="text-muted">No orders in prototype.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-auto">
+      <div class="container text-center small">&copy; 2026 CAGURA — Prototype</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+      // populate profile from localStorage user
+      document.addEventListener('DOMContentLoaded', function(){
+        try{
+          const user = JSON.parse(localStorage.getItem('cagura_user')|| 'null');
+          if(user){
+            document.getElementById('profile-name').textContent = user.name || 'Guest';
+            document.getElementById('profile-email').textContent = user.email || '-';
+            document.getElementById('acc-name').textContent = user.name || 'Guest';
+            document.getElementById('acc-email').textContent = user.email || '-';
+            document.getElementById('acc-member').textContent = user.created || '—';
+            document.getElementById('profile-edit').textContent = 'Edit profile';
+            document.getElementById('profile-edit').href = 'login.html';
+          }
+        }catch(e){/* ignore */}
+      });
+    </script>
+  </body>
+</html>
