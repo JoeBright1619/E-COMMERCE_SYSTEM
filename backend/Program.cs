@@ -16,7 +16,7 @@ builder.Services.AddOpenApi();
 
 // Database configuration
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Server=localhost\\SQLEXPRESS;Database=CaguraDb;Trusted_Connection=True;TrustServerCertificate=True;";
+    ?? "Data Source=DESKTOP-K0H6TJ3\\SQLEXPRESS;Initial Catalog=CaguraDb;Integrated Security=True;Trust Server Certificate=True";
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
