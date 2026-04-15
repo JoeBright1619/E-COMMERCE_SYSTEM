@@ -9,6 +9,12 @@ using backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Disable BrowserLink to prevent console errors
+builder.Services.AddBrowserLinkServices(options =>
+{
+    options.Enabled = false;
+});
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
