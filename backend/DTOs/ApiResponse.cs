@@ -28,9 +28,13 @@ namespace backend.DTOs
     }
 
     // Non-generic version for responses with no data
-    public class ApiResponse : ApiResponse<object>
+    public class ApiResponse
     {
-        public new static ApiResponse Success(string message = "Operation completed successfully.")
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public object? Data { get; set; }
+
+        public static ApiResponse SuccessResult(string message = "Operation completed successfully.")
         {
             return new ApiResponse
             {
@@ -40,7 +44,7 @@ namespace backend.DTOs
             };
         }
 
-        public new static ApiResponse ErrorResult(string message)
+        public static ApiResponse ErrorResult(string message)
         {
             return new ApiResponse
             {
