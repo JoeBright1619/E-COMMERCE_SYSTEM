@@ -30,7 +30,7 @@ namespace backend.DTOs
     // Non-generic version for responses with no data
     public class ApiResponse : ApiResponse<object>
     {
-        public static ApiResponse Success(string message = "Operation completed successfully.")
+        public new static ApiResponse Success(string message = "Operation completed successfully.")
         {
             return new ApiResponse
             {

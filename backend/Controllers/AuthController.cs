@@ -28,7 +28,7 @@ namespace backend.Controllers
             {
                 return BadRequest(ApiResponse<AuthResponseDto>.ErrorResult(ex.Message));
             }
-            catch (Exception ex)
+            catch
             {
                 return StatusCode(500, ApiResponse<AuthResponseDto>.ErrorResult("An error occurred during registration"));
             }
@@ -46,7 +46,7 @@ namespace backend.Controllers
             {
                 return BadRequest(ApiResponse<AuthResponseDto>.ErrorResult(ex.Message));
             }
-            catch (Exception ex)
+            catch
             {
                 return StatusCode(500, ApiResponse<AuthResponseDto>.ErrorResult("An error occurred during login"));
             }
