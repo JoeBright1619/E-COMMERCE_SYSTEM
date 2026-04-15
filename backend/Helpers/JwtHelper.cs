@@ -7,18 +7,19 @@ namespace backend.Helpers
 {
     public class JwtHelper
     {
-        public static string GenerateToken(string email, string name, string role, string secretKey, string issuer, string audience)
+        public static string GenerateToken(string email, string name, string role, int userId, string secretKey, string issuer, string audience)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, email),
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.Role, role),
-                new Claim("role", role) // Additional role claim for easier access
+                new Claim("email", email),
+                new Claim("name", name),
+                new Claim("role", role),
+                new Claim("userId", userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor

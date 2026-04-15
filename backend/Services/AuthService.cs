@@ -83,7 +83,7 @@ namespace backend.Services
             var issuer = jwtSettings["Issuer"] ?? "CaguraApi";
             var audience = jwtSettings["Audience"] ?? "CaguraClient";
 
-            return JwtHelper.GenerateToken(user.Email, user.Name, user.Role, secretKey, issuer, audience);
+            return JwtHelper.GenerateToken(user.Email, user.Name, user.Role, user.Id, secretKey, issuer, audience);
         }
     }
 }
