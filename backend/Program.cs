@@ -89,7 +89,10 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // Global Exception Handling (must be first)
 app.UseMiddleware<GlobalExceptionMiddleware>();
