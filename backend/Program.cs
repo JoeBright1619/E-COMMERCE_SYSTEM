@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.Data;
+using backend.Repositories;
+using backend.Services;
+using backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +58,10 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Dependency Injection
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,6 +77,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Global Exception Handling (must be first)
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseCors("AllowFrontend");
 
