@@ -15,18 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Configure Swagger for JWT authentication
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Enter 'Bearer' [space] and then your token"
-    });
-});
+builder.Services.AddSwaggerGen();
 
 // Database configuration
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
