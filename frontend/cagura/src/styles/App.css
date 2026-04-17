@@ -3,18 +3,20 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #ffffff;
 }
 
 .main-content {
   flex: 1;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
 }
 
 .page-placeholder {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
   text-align: center;
-  color: #7f8c8d;
-  font-size: 1.3rem;
+  color: #9ca3af;
+  font-size: 1.25rem;
+  font-weight: 500;
 }
