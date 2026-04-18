@@ -1,0 +1,142 @@
+.home-page {
+  width: 100%;
+}
+
+.brands-marquee {
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  white-space: nowrap;
+}
+
+.marquee-content {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  animation: scroll 20s linear infinite;
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-size: 1.1rem;
+}
+
+.marquee-content .dot {
+  color: var(--accent-primary);
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.featured-section {
+  padding: 6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.view-all-container {
+  display: flex;
+  justify-content: center;
+}
+
+.view-all-btn {
+  padding: 0.75rem 2.5rem;
+}
+
+.newsletter-section {
+  padding: 4rem 2rem 8rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.newsletter-card {
+  padding: 4rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: var(--accent-glow);
+  border-radius: 50%;
+  filter: blur(50px);
+  z-index: -1;
+}
+
+.newsletter-card h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.newsletter-card p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.newsletter-input:focus {
+  border-color: var(--accent-primary);
+}
+
+@media (max-width: 600px) {
+  .newsletter-form {
+    flex-direction: column;
+  }
+}
