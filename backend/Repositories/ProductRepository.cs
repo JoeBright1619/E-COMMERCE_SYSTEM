@@ -17,7 +17,7 @@ namespace backend.Repositories
         {
             return await _context.Products
                 .Include(p => p.Category)
-                .Where(p => p.IsActive)
+                .Include(p => p.Reviews)
                 .ToListAsync();
         }
 
@@ -25,14 +25,16 @@ namespace backend.Repositories
         {
             return await _context.Products
                 .Include(p => p.Category)
-                .FirstOrDefaultAsync(p => p.Id == id && p.IsActive);
+                .Include(p => p.Reviews)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId)
         {
             return await _context.Products
                 .Include(p => p.Category)
-                .Where(p => p.CategoryId == categoryId && p.IsActive)
+                .Include(p => p.Reviews)
+                .Where(p => p.CategoryId == categoryId)
                 .ToListAsync();
         }
 

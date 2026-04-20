@@ -9,5 +9,6 @@ namespace backend.Repositories
         Task<Order> CreateAsync(Order order);
         Task<Order> UpdateAsync(Order order);
         Task<IEnumerable<OrderItem>> GetOrderItemsAsync(int orderId);
+        Task<IEnumerable<Order>> GetAllAsync();
     }
 }

@@ -45,8 +45,17 @@ namespace backend.Repositories
         public async Task<IEnumerable<OrderItem>> GetOrderItemsAsync(int orderId)
         {
             return await _context.OrderItems
-                .Include(oi => oi.Product)
                 .Where(oi => oi.OrderId == orderId)
+                .Include(oi => oi.Product)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetAllAsync()
+        {
+            return await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                .ThenInclude(o => o.Product)
                 .ToListAsync();
         }
     }
