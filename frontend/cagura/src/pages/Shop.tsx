@@ -1,19 +1,36 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { SlidersHorizontal, Sparkles, Tag, TrendingUp } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
 import api from '../services/api';
 import type { Product } from '../contexts/CartContext';
 import './Shop.css';
 
+const SORT_OPTIONS = [
+  { value: 'default', label: 'Recommended' },
+  { value: 'price-asc', label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
+  { value: 'newest', label: 'Newest Arrivals' },
+];
+
+const VIEW_OPTIONS = [
+  { value: 'all', label: 'All Products', icon: SlidersHorizontal },
+  { value: 'new', label: "What's New", icon: Sparkles },
+  { value: 'deals', label: 'Deals', icon: Tag },
+  { value: 'bestsellers', label: 'Best Sellers', icon: TrendingUp },
+];
+
 const Shop = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get('search')?.toLowerCase() || '';
+  const categoryParam = searchParams.get('category') || 'All';
+  const view = searchParams.get('view') || 'all';
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [sortOption, setSortOption] = useState('default');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,81 +44,157 @@ const Shop = () => {
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
-  const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
+  const categories = ['All', ...Array.from(new Set(products.map((product) => product.category)))];
+  const activeCategory = categories.find((category) => category.toLowerCase() === categoryParam.toLowerCase()) ?? 'All';
+
+  const productsByView = view === 'new'
+    ? products.filter((product) => product.isNew)
+    : view === 'deals'
+      ? products.filter((product) => product.price <= 200)
+      : view === 'bestsellers'
+        ? [...products].sort((first, second) => first.price - second.price).slice(0, Math.max(4, Math.ceil(products.length / 2)))
+        : products;
 
   const filteredProducts = activeCategory === 'All'
-    ? products
-    : products.filter(p => p.category === activeCategory);
+    ? productsByView
+    : productsByView.filter((product) => product.category === activeCategory);
 
-  const finalProducts = query
-    ? filteredProducts.filter(p => p.title.toLowerCase().includes(query) || p.description.toLowerCase().includes(query))
+  const searchedProducts = query
+    ? filteredProducts.filter((product) => product.title.toLowerCase().includes(query) || product.description.toLowerCase().includes(query))
     : filteredProducts;
+
+  const finalProducts = [...searchedProducts].sort((first, second) => {
+    if (sortOption === 'price-asc') return first.price - second.price;
+    if (sortOption === 'price-desc') return second.price - first.price;
+    if (sortOption === 'newest') return Number(second.isNew) - Number(first.isNew);
+    return 0;
+  });
+
+  const titlePrefix = view === 'new'
+    ? 'Fresh'
+    : view === 'deals'
+      ? "Today's"
+      : view === 'bestsellers'
+        ? 'Best'
+        : activeCategory !== 'All'
+          ? 'Shop'
+          : 'Our';
+
+  const titleAccent = view === 'new'
+    ? 'Arrivals'
+    : view === 'deals'
+      ? 'Deals'
+      : view === 'bestsellers'
+        ? 'Sellers'
+        : activeCategory !== 'All'
+          ? activeCategory
+          : 'Collection';
+
+  const shopSubtitle = view === 'new'
+    ? 'Fresh arrivals curated for customers who want the latest additions first.'
+    : view === 'deals'
+      ? 'A cleaner, easier way to scan value picks without digging through the full catalog.'
+      : view === 'bestsellers'
+        ? 'Popular picks surfaced in a simpler editorial layout for faster decision-making.'
+        : activeCategory !== 'All'
+          ? `Browse curated ${activeCategory.toLowerCase()} essentials designed to feel easier to shop.`
+          : 'Explore our full range of premium products designed for your digital lifestyle.';
 
   return (
     <div className="page-background shop-bg">
       <div className="shop-page">
-      <div className="shop-header">
-        <h1>Our <span className="text-gradient">Collection</span></h1>
-        <p>Explore our full range of premium products designed for your digital lifestyle.</p>
-        {query && <div className="search-results-text mt-4 text-secondary">Search results for "{query}"</div>}
-      </div>
+        <div className="shop-header">
+          <p className="shop-eyebrow">Curated Storefront</p>
+          <h1>{titlePrefix} <span className="text-gradient">{titleAccent}</span></h1>
+          <p>{shopSubtitle}</p>
+          {query && <div className="search-results-text">Search results for "{query}"</div>}
+        </div>
 
-      <div className="shop-container">
-        <aside className="shop-sidebar glass-panel">
-          <h3>Categories</h3>
-          <ul className="category-list">
-            {categories.map(cat => (
-              <li key={cat}>
-                <button
-                  className={`category-btn ${activeCategory === cat ? 'active' : ''}`}
-                  onClick={() => setActiveCategory(cat)}
+        <div className="shop-view-switcher">
+          {VIEW_OPTIONS.map(({ value, label, icon: Icon }) => (
+            <Link
+              key={value}
+              to={value === 'all' ? '/shop' : `/shop?view=${value}`}
+              className={`shop-view-pill ${view === value ? 'active' : ''}`}
+            >
+              <Icon size={16} />
+              <span>{label}</span>
+            </Link>
+          ))}
+        </div>
+
+        <div className="shop-container">
+          <aside className="shop-sidebar glass-panel">
+            <div className="shop-sidebar-header">
+              <h3>Categories</h3>
+              <span>{categories.length - 1} edits</span>
+            </div>
+
+            <div className="shop-category-pills">
+              {categories.map((category) => (
+                <Link
+                  key={category}
+                  to={category === 'All' ? '/shop' : `/shop?category=${encodeURIComponent(category)}`}
+                  className={`category-btn ${activeCategory === category ? 'active' : ''}`}
                 >
-                  {cat}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </aside>
-
-        <main className="shop-main">
-          <div className="shop-results-header">
-            <span>Showing {finalProducts.length} results</span>
-            <select className="sort-select">
-              <option>Default Sorting</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Newest Arrivals</option>
-            </select>
-          </div>
-
-          {loading ? (
-            <div className="product-grid shop-grid">
-              <Skeleton type="card" count={6} />
+                  {category}
+                </Link>
+              ))}
             </div>
-          ) : (
-            <div className="product-grid shop-grid">
-              {finalProducts.length > 0 ? (
-                finalProducts.map(product => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    title={product.title}
-                    price={product.price}
-                    image={product.image}
-                    category={product.category}
-                    isNew={product.isNew}
-                  />
-                ))
-              ) : (
-                <div className="empty-state">No products found matching your criteria.</div>
-              )}
+          </aside>
+
+          <main className="shop-main">
+            <div className="shop-results-header">
+              <div>
+                <span className="shop-results-count">Showing {finalProducts.length} products</span>
+                <p className="shop-results-helper">Use the quick filters to keep browsing focused and light.</p>
+              </div>
+
+              <label className="sort-shell">
+                <span>Sort</span>
+                <select className="sort-select" value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
-          )}
-        </main>
-      </div>
+
+            {loading ? (
+              <div className="product-grid shop-grid">
+                <Skeleton type="card" count={6} />
+              </div>
+            ) : (
+              <div className="product-grid shop-grid">
+                {finalProducts.length > 0 ? (
+                  finalProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      id={product.id}
+                      title={product.title}
+                      price={product.price}
+                      image={product.image}
+                      category={product.category}
+                      isNew={product.isNew}
+                    />
+                  ))
+                ) : (
+                  <div className="shop-empty-state glass-panel">
+                    <h3>No products found</h3>
+                    <p>Try a different category, reset the view, or search for a broader term.</p>
+                    <Link to="/shop" className="btn btn-secondary">Reset Shop View</Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );

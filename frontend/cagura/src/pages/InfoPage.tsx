@@ -84,6 +84,22 @@ const InfoPage = () => {
             </>
           )
         };
+      case 'delivery':
+        return {
+          title: 'Shipping & Delivery',
+          content: (
+            <>
+              <h2>Shipping Options</h2>
+              <p>We offer standard shipping on all orders, with free delivery automatically applied when your basket reaches the qualifying threshold. Expedited options can be added during checkout when available.</p>
+
+              <h2>Processing Times</h2>
+              <p>Orders are usually prepared within 1-2 business days. Once your shipment leaves our warehouse, you will receive tracking details by email so you can follow every step of the delivery.</p>
+
+              <h2>Returns & Exchanges</h2>
+              <p>If something is not quite right, you have 30 days to request a return. Items should be sent back in original condition, and our support team can help with exchanges or replacements.</p>
+            </>
+          )
+        };
       default:
         return {
           title: 'Page Not Found',

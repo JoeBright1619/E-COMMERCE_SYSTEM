@@ -5,17 +5,70 @@ import api from './api';
 const mock = new MockAdapter(api, { delayResponse: 800 }); // simulate network delay
 
 // ----- MOCK DATA -----
+const CACHED_UNSPLASH = {
+  "Men's Clothing": ['1521572163474-6864f9cf17ab', '1551028719-00167b16eac5', '1473966968600-fa801b869a1a', '1576566588028-4147f3842f27', '1503342217505-b0a15ec3261c', '1541099649105-f69ad21f3246', '1602810318383-e386cc2a3ccf'],
+  "Women's Clothing": ['1620799140408-edc6dcb6d633', '1539008835657-9e8e9680c956', '1509631179647-0177331693ae', '1594633312681-425c7b97ccd1', '1515886657613-9f3515b0c78f', '1583743814966-8936f5b7be1a', '1602810318383-e386cc2a3ccf'],
+  "Footwear": ['1549298916-b41d501d3772', '1638247025967-b4e38f787b76', '1543163521-1bf539c55dd2', '1542291026-7eec264c27ff', '1511556820780-d912e42b4980', '1595950653106-6c9ebd614d3a'],
+  "Audio": ['1505740420928-5e560c06d30e', '1504707748692-419802cf939d', '1608043152269-423dbba4e7e1'],
+  "Accessories": ['1544816155-12df9643f363', '1585338107529-13afc5f02586', '1511499767150-a48a237f0083', '1523275335684-37898b6baf30', '1584916201218-f4242ceb4809', '1553062407-98eeb64c6a62', '1514327605112-b887c0e61c0a', '1496181133206-80ce9b88a853', '1517336714731-489689fd1ca8', '1525547719571-a2d4ac8945e2', '1527864550417-7fd91fc51a46', '1593640408182-31c70c8268f5'],
+  "Displays": ['1527443154391-507e9dc6c5cc', '1527443224154-c4a3942d3acf', '1527443195645-1133f7f28990'],
+  "Wearables": ['1546868871-7041f2a55e12', '1523275335684-37898b6baf30']
+};
+
+const getPic = (category: string, id: number) => {
+  const ids = CACHED_UNSPLASH[category as keyof typeof CACHED_UNSPLASH] || CACHED_UNSPLASH['Accessories'];
+  const photoId = ids[id % ids.length]; // Fix the broken math that caused repeats!
+  return `https://images.unsplash.com/photo-${photoId}?auto=format&fit=crop&q=80&w=800`;
+};
+
 const MOCK_PRODUCTS = [
   { id: 1, title: 'Aura Sync Smartwatch', description: 'Advanced smartwatch with health tracking and seamless integration.', price: 299.99, image: '/assets/product_watch_1776467103171.png', category: 'Wearables', isNew: true },
   { id: 2, title: 'SonicPro Wireless Headphones', description: 'High-fidelity audio with active noise cancellation.', price: 349.50, image: '/assets/product_headphones_1776467120598.png', category: 'Audio', isNew: false },
   { id: 3, title: 'AeroGlide Future Sneakers', description: 'Lightweight, dynamic comfort for the modern lifestyle.', price: 189.99, image: '/assets/product_sneakers_1776467199864.png', category: 'Footwear', isNew: true },
-  { id: 4, title: 'Neon Pulse Mechanical Keyboard', description: 'Custom switches with vibrant RGB backlighting.', price: 149.99, image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=800', category: 'Accessories', isNew: false },
-  { id: 5, title: 'Zenith 4K Monitor', description: 'Ultra-wide display with stunning color accuracy.', price: 599.00, image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=800', category: 'Displays', isNew: true },
-  { id: 6, title: 'Ergonomic Wireless Mouse', price: 89.99, image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=800', category: 'Accessories', isNew: false, description: 'Designed for comfort during long sessions. Features customizable buttons and multi-device support.' },
-  { id: 7, title: 'Fitness Tracker Band Mini', price: 59.99, image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&q=80&w=800', category: 'Wearables', isNew: false, description: 'Lightweight and waterproof fitness tracker with sleep monitoring and heart rate sensors.' },
+  { id: 4, title: 'Neon Pulse Mechanical Keyboard', description: 'Custom switches with vibrant RGB backlighting.', price: 149.99, image: `https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=800`, category: 'Accessories', isNew: false },
+  { id: 5, title: 'Zenith 4K Monitor', description: 'Ultra-wide display with stunning color accuracy.', price: 599.00, image: getPic('Displays', 0), category: 'Displays', isNew: true },
+  { id: 6, title: 'Ergonomic Wireless Mouse', price: 89.99, image: `https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=800`, category: 'Accessories', isNew: false, description: 'Designed for comfort during long sessions. Features customizable buttons and multi-device support.' },
+  { id: 7, title: 'Fitness Tracker Band Mini', price: 59.99, image: getPic('Wearables', 0), category: 'Wearables', isNew: false, description: 'Lightweight and waterproof fitness tracker with sleep monitoring and heart rate sensors.' },
   { id: 8, title: 'Wireless Charging Pad', price: 39.99, image: '/assets/wireless_charger.png', category: 'Accessories', isNew: false, description: 'Fast wireless charging for all your Qi-compatible devices with a premium leather finish.' },
-  { id: 9, title: 'Studio Condenser Microphone', price: 199.50, image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800', category: 'Audio', isNew: true, description: 'Professional-grade microphone for crystal clear audio recording and broadcasting.' },
-  { id: 10, title: 'Portable SSD 2TB', price: 249.00, image: 'https://images.unsplash.com/photo-1531492746076-161ca9bcad58?auto=format&fit=crop&q=80&w=800', category: 'Accessories', isNew: false, description: 'Lightning-fast storage in a rugged, pocket-sized aluminum enclosure.' }
+  { id: 9, title: 'Studio Condenser Microphone', price: 199.50, image: getPic('Audio', 1), category: 'Audio', isNew: true, description: 'Professional-grade microphone for crystal clear audio recording and broadcasting.' },
+  { id: 10, title: 'Portable SSD 2TB', price: 249.00, image: getPic('Accessories', 2), category: 'Accessories', isNew: false, description: 'Lightning-fast storage in a rugged, pocket-sized aluminum enclosure.' },
+  { id: 11, title: 'Titanium Smart Ring', price: 199.99, image: '/assets/titanium_smart_ring_1776712869520.png', category: 'Wearables', isNew: true, description: 'Sleek titanium smart ring with advanced health and sleep tracking capabilities.' },
+  { id: 12, title: 'Premium Noise-Canceling Earbuds', price: 249.00, image: '/assets/premium_earbuds_1776712916481.png', category: 'Audio', isNew: true, description: 'Experience pure silence and rich audio with our matte finish premium wireless earbuds.' },
+  { id: 13, title: 'Urban Commuter Backpack', price: 129.50, image: '/assets/urban_backpack_1776712967683.png', category: 'Accessories', isNew: false, description: 'Water-resistant, minimalist backpack designed for the modern professional.' },
+  { id: 14, title: 'Leather Smart Wallet', price: 79.99, image: '/assets/smart_wallet_1776713017275.png', category: 'Accessories', isNew: true, description: 'Slim profile leather wallet with built-in RFID blocking and tracking technology.' },
+  { id: 15, title: 'Heavyweight Minimalist T-Shirt', price: 45.00, image: getPic('Men\'s Clothing', 0), category: 'Men\'s Clothing', isNew: true, description: 'Premium heavy-weight cotton t-shirt with a relaxed fit and incredibly soft feel.' },
+  { id: 16, title: 'Tailored Modern Chinos', price: 89.00, image: getPic('Men\'s Clothing', 1), category: 'Men\'s Clothing', isNew: false, description: 'Versatile, sharp chinos designed for all-day comfort and mobility.' },
+  { id: 17, title: 'Charcoal Bomber Jacket', price: 145.00, image: getPic('Men\'s Clothing', 2), category: 'Men\'s Clothing', isNew: true, description: 'Sleek, minimalist bomber jacket perfect for layering in transition seasons.' },
+  { id: 18, title: 'Ribbed Knit Sweater', price: 95.00, image: getPic('Women\'s Clothing', 0), category: 'Women\'s Clothing', isNew: true, description: 'Cozy, elegant ribbed sweater in soft cream, crafted from a premium wool blend.' },
+  { id: 19, title: 'Wide-Leg Trousers', price: 115.00, image: getPic('Women\'s Clothing', 1), category: 'Women\'s Clothing', isNew: false, description: 'Fluid, wide-leg trousers that offer a sophisticated silhouette with effortless comfort.' },
+  { id: 20, title: 'Silk Slip Dress', price: 175.00, image: getPic('Women\'s Clothing', 2), category: 'Women\'s Clothing', isNew: true, description: 'A timeless silk slip dress in deep burgundy, designed to drape beautifully.' },
+  { id: 21, title: 'Classic Leather Sneakers', price: 120.00, image: getPic('Footwear', 0), category: 'Footwear', isNew: false, description: 'Clean, minimalist white leather sneakers for everyday wear.' },
+  { id: 22, title: 'Suede Chelsea Boots', price: 165.00, image: getPic('Footwear', 1), category: 'Footwear', isNew: true, description: 'Premium suede Chelsea boots with an effortless slip-on design.' },
+  { id: 23, title: 'Strappy Block Heels', price: 140.00, image: getPic('Footwear', 2), category: 'Footwear', isNew: false, description: 'Elegant and comfortable block heel sandals perfect for evening transitions.' },
+  { id: 24, title: 'Leather Ankle Boots', price: 185.00, image: getPic('Footwear', 3), category: 'Footwear', isNew: true, description: 'Sleek leather ankle boots with a subtle heel for everyday sophistication.' },
+  { id: 25, title: 'Pro Fitness Tracker Band', price: 129.00, image: getPic('Wearables', 1), category: 'Wearables', isNew: false, description: 'Minimalist fitness band tracking heart rate, sleep, and daily activity seamlessly.' },
+  { id: 26, title: 'Waterproof Portable Speaker', price: 89.99, image: getPic('Audio', 2), category: 'Audio', isNew: true, description: 'Rugged, waterproof Bluetooth speaker delivering crisp 360-degree sound.' },
+  { id: 27, title: 'Studio Over-Ear Headphones', price: 199.00, image: getPic('Audio', 3), category: 'Audio', isNew: false, description: 'Professional-grade studio headphones offering flat response and supreme comfort.' },
+  { id: 28, title: 'Leather Tech Organizer', price: 65.00, image: getPic('Accessories', 3), category: 'Accessories', isNew: false, description: 'Premium leather pouch to keep your cables and chargers organized.' },
+  { id: 29, title: 'Wireless Charging Hub', price: 49.50, image: getPic('Accessories', 4), category: 'Accessories', isNew: true, description: 'Sleek aluminum charging pad for your phone, watch, and earbuds.' },
+  { id: 30, title: 'Minimalist Sunglasses', price: 110.00, image: getPic('Accessories', 5), category: 'Accessories', isNew: true, description: 'Classic matte black sunglasses with polarized lenses.' },
+  { id: 31, title: '27" 4K Creator Monitor', price: 450.00, image: getPic('Displays', 1), category: 'Displays', isNew: false, description: 'Color-accurate 4K display designed for designers and video editors.' },
+  { id: 32, title: 'Cashmere Crewneck', price: 155.00, image: getPic('Men\'s Clothing', 3), category: 'Men\'s Clothing', isNew: true, description: 'Ultra-soft cashmere blend crewneck sweater for elevated comfort.' },
+  { id: 33, title: 'Selvedge Denim Jacket', price: 135.00, image: getPic('Men\'s Clothing', 4), category: 'Men\'s Clothing', isNew: false, description: 'Classic raw selvedge denim jacket that fades beautifully over time.' },
+  { id: 34, title: 'Oversized Linen Blazer', price: 145.00, image: getPic('Women\'s Clothing', 3), category: 'Women\'s Clothing', isNew: true, description: 'Lightweight, relaxed-fit linen blazer perfect for warm weather layering.' },
+  { id: 35, title: 'Pleated Midi Skirt', price: 85.00, image: getPic('Women\'s Clothing', 4), category: 'Women\'s Clothing', isNew: false, description: 'Elegant pleated midi skirt offering fluid movement and a soft silhouette.' },
+  { id: 36, title: 'Velocity Running Shoes', price: 140.00, image: getPic('Footwear', 4), category: 'Footwear', isNew: true, description: 'High-performance running shoes with responsive cushioning and a knit upper.' },
+  { id: 37, title: 'Leather Penny Loafers', price: 175.00, image: getPic('Footwear', 5), category: 'Footwear', isNew: false, description: 'Classic leather loafers that blend timeless style with modern comfort.' },
+  { id: 38, title: 'Classic Trench Coat', price: 245.00, image: getPic('Women\'s Clothing', 5), category: 'Women\'s Clothing', isNew: true, description: 'A timeless double-breasted trench coat with a water-resistant finish.' },
+  { id: 39, title: 'Tailored Wool Suit', price: 450.00, image: getPic('Men\'s Clothing', 5), category: 'Men\'s Clothing', isNew: false, description: 'Perfectly tailored slim-fit wool suit for formal occasions.' },
+  { id: 40, title: 'Silk Wrap Blouse', price: 125.00, image: getPic('Women\'s Clothing', 6), category: 'Women\'s Clothing', isNew: true, description: 'Elegant silk blouse with a flattering wrap silhouette.' },
+  { id: 41, title: 'Luxury Automatic Watch', price: 899.00, image: getPic('Accessories', 6), category: 'Accessories', isNew: true, description: 'Premium automatic timepiece with a sapphire crystal face and leather band.' },
+  { id: 42, title: 'Designer Leather Handbag', price: 320.00, image: getPic('Accessories', 7), category: 'Accessories', isNew: false, description: 'Spacious and elegant structured leather tote bag.' },
+  { id: 43, title: 'Classic Oxford Shirt', price: 85.00, image: getPic('Men\'s Clothing', 6), category: 'Men\'s Clothing', isNew: false, description: 'A crisp, breathable cotton oxford shirt for everyday polish.' },
+  { id: 44, title: 'Wool Fedora Hat', price: 65.00, image: getPic('Accessories', 8), category: 'Accessories', isNew: true, description: 'Classic wool felt fedora with a grosgrain ribbon band.' },
+  { id: 45, title: 'Minimalist Gold Pendant', price: 150.00, image: getPic('Accessories', 9), category: 'Accessories', isNew: true, description: 'Delicate 14k gold chain with a subtle geometric pendant.' },
+  { id: 46, title: 'Leather Briefcase', price: 210.00, image: getPic('Accessories', 10), category: 'Accessories', isNew: false, description: 'Professional, slim leather briefcase designed for modern laptops.' },
+  { id: 47, title: 'Tortoiseshell Sunglasses', price: 115.00, image: getPic('Accessories', 11), category: 'Accessories', isNew: true, description: 'Classic tortoiseshell frames with UV400 protection.' }
 ];
 
 let mockCart = [
@@ -108,7 +161,7 @@ mock.onPut(/\/admin\/orders\/\d+/).reply((config) => {
   if (!idMatch) return [400, { message: 'Invalid ID' }];
   const id = parseInt(idMatch[1]);
   const { status } = JSON.parse(config.data);
-  
+
   const orderIndex = mockAllOrders.findIndex(o => o.id === id);
   if (orderIndex >= 0) {
     mockAllOrders[orderIndex].status = status;

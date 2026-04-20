@@ -1,8 +1,11 @@
 .categories-page {
   padding: 8rem 2rem 4rem;
+  min-height: calc(100vh - 300px);
+  background: linear-gradient(rgba(248, 251, 253, 0.88), rgba(248, 251, 253, 0.95)), url('https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&q=80&w=1920') center/cover fixed no-repeat;
+}
+.categories-page > * {
   max-width: 1200px;
   margin: 0 auto;
-  min-height: calc(100vh - 300px);
 }
 
 .category-grid {
