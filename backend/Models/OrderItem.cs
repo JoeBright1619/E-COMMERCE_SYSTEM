@@ -11,7 +11,7 @@ namespace backend.Models
         public int Quantity { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; } // Price snapshot at time of order
+        public decimal UnitPrice { get; set; } // Price snapshot at time of order
 
         // Foreign keys
         public int OrderId { get; set; }

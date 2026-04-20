@@ -51,11 +51,15 @@ namespace backend.Services
 
             // Check if item already exists in cart
             var existingCartItem = await _cartItemRepository.GetByUserAndProductAsync(userId, cartDto.ProductId);
-            
+
             if (existingCartItem != null)
             {
                 // Update quantity
-                existingCartItem.Quantity += cartDto.Quantity;
+                int newQuantity = existingCartItem.Quantity + cartDto.Quantity;
+                if (product.StockQuantity < newQuantity)
+                    throw new InvalidOperationException($"Insufficient stock. Only {product.StockQuantity} available, and you already have {existingCartItem.Quantity} in cart.");
+
+                existingCartItem.Quantity = newQuantity;
                 var updatedItem = await _cartItemRepository.UpdateAsync(existingCartItem);
                 return MapToCartItemResponseDto(updatedItem);
             }
@@ -75,13 +79,14 @@ namespace backend.Services
             }
         }
 
-        public async Task<CartItemResponseDto?> UpdateCartItemAsync(int userId, int productId, CartUpdateDto updateDto)
+        public async Task<CartItemResponseDto?> UpdateCartItemAsync(int userId, int cartItemId, CartUpdateDto updateDto)
         {
-            var cartItem = await _cartItemRepository.GetByUserAndProductAsync(userId, productId);
+            var cartItems = await _cartItemRepository.GetByUserIdAsync(userId);
+            var cartItem = cartItems.FirstOrDefault(ci => ci.Id == cartItemId);
             if (cartItem == null) return null;
 
             // Check if product has enough stock
-            var product = await _productRepository.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(cartItem.ProductId);
             if (product != null && product.StockQuantity < updateDto.Quantity)
                 throw new InvalidOperationException("Insufficient stock");
 
@@ -90,9 +95,13 @@ namespace backend.Services
             return MapToCartItemResponseDto(updatedItem);
         }
 
-        public async Task<bool> RemoveFromCartAsync(int userId, int productId)
+        public async Task<bool> RemoveFromCartAsync(int userId, int cartItemId)
         {
-            return await _cartItemRepository.DeleteByUserAndProductAsync(userId, productId);
+            var cartItems = await _cartItemRepository.GetByUserIdAsync(userId);
+            var cartItem = cartItems.FirstOrDefault(ci => ci.Id == cartItemId);
+            if (cartItem == null) return false;
+
+            return await _cartItemRepository.DeleteAsync(cartItemId);
         }
 
         public async Task<bool> ClearCartAsync(int userId)

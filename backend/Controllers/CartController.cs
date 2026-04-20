@@ -6,7 +6,7 @@ using backend.Services;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/cart")]
     [Authorize]
     public class CartController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace backend.Controllers
             {
                 var userId = GetCurrentUserId();
                 var cart = await _cartService.GetCartAsync(userId);
-                return Ok(ApiResponse<CartResponseDto>.SuccessResult(cart));
+                return Ok(ApiResponse<CartResponseDto>.SuccessResult(cart, "Cart retrieved successfully."));
             }
             catch (InvalidOperationException ex)
             {
@@ -36,14 +36,14 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<ActionResult<ApiResponse<CartItemResponseDto>>> AddToCart(CartAddDto cartDto)
         {
             try
             {
                 var userId = GetCurrentUserId();
                 var cartItem = await _cartService.AddToCartAsync(userId, cartDto);
-                return Ok(ApiResponse<CartItemResponseDto>.SuccessResult(cartItem, "Item added to cart successfully"));
+                return StatusCode(201, ApiResponse<CartItemResponseDto>.SuccessResult(cartItem, "Item added to cart."));
             }
             catch (InvalidOperationException ex)
             {
@@ -55,18 +55,18 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPut("update/{productId}")]
-        public async Task<ActionResult<ApiResponse<CartItemResponseDto>>> UpdateCartItem(int productId, CartUpdateDto updateDto)
+        [HttpPut("{cartItemId}")]
+        public async Task<ActionResult<ApiResponse<CartItemResponseDto>>> UpdateCartItem(int cartItemId, CartUpdateDto updateDto)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var cartItem = await _cartService.UpdateCartItemAsync(userId, productId, updateDto);
+                var cartItem = await _cartService.UpdateCartItemAsync(userId, cartItemId, updateDto);
                 if (cartItem == null)
                 {
-                    return NotFound(ApiResponse<CartItemResponseDto>.ErrorResult("Cart item not found"));
+                    return NotFound(ApiResponse<CartItemResponseDto>.ErrorResult($"Cart item with ID {cartItemId} was not found."));
                 }
-                return Ok(ApiResponse<CartItemResponseDto>.SuccessResult(cartItem, "Cart item updated successfully"));
+                return Ok(ApiResponse<CartItemResponseDto>.SuccessResult(cartItem, "Cart item updated."));
             }
             catch (InvalidOperationException ex)
             {
@@ -78,18 +78,18 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("remove/{productId}")]
-        public async Task<ActionResult<ApiResponse<string>>> RemoveFromCart(int productId)
+        [HttpDelete("{cartItemId}")]
+        public async Task<ActionResult<ApiResponse<string>>> RemoveFromCart(int cartItemId)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var result = await _cartService.RemoveFromCartAsync(userId, productId);
+                var result = await _cartService.RemoveFromCartAsync(userId, cartItemId);
                 if (!result)
                 {
-                    return NotFound(ApiResponse<string>.ErrorResult("Cart item not found"));
+                    return NotFound(ApiResponse<string>.ErrorResult($"Cart item with ID {cartItemId} was not found."));
                 }
-                return Ok(ApiResponse<string>.SuccessResult("Item removed from cart successfully"));
+                return Ok(ApiResponse<string>.SuccessResult(null, "Item removed from cart."));
             }
             catch
             {
@@ -97,18 +97,14 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("clear")]
+        [HttpDelete]
         public async Task<ActionResult<ApiResponse<string>>> ClearCart()
         {
             try
             {
                 var userId = GetCurrentUserId();
                 var result = await _cartService.ClearCartAsync(userId);
-                if (!result)
-                {
-                    return NotFound(ApiResponse<string>.ErrorResult("Cart is already empty"));
-                }
-                return Ok(ApiResponse<string>.SuccessResult("Cart cleared successfully"));
+                return Ok(ApiResponse<string>.SuccessResult(null, "Cart cleared successfully."));
             }
             catch
             {
