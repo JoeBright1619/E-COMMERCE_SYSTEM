@@ -7,7 +7,7 @@ namespace backend.Helpers
 {
     public class JwtHelper
     {
-        public static string GenerateToken(string email, string name, string role, int userId, string secretKey, string issuer, string audience)
+        public static string GenerateToken(string email, string name, string role, int userId, string secretKey, string issuer, string audience, int expiryHours)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
@@ -25,7 +25,7 @@ namespace backend.Helpers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(24),
+                Expires = DateTime.UtcNow.AddHours(expiryHours),
                 Issuer = issuer,
                 Audience = audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

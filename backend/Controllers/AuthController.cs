@@ -22,7 +22,7 @@ namespace backend.Controllers
             try
             {
                 var result = await _authService.RegisterAsync(request);
-                return Ok(ApiResponse<AuthResponseDto>.SuccessResult(result, "Registration successful"));
+                return StatusCode(201, ApiResponse<AuthResponseDto>.SuccessResult(result, "Registration successful"));
             }
             catch (InvalidOperationException ex)
             {

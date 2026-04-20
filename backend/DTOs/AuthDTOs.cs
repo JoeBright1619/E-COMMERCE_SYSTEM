@@ -5,6 +5,7 @@ namespace backend.DTOs
     public class RegisterRequestDto
     {
         [Required(ErrorMessage = "Name is required")]
+        [MinLength(2, ErrorMessage = "Name must be at least 2 characters")]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
         public string Name { get; set; } = string.Empty;
 
@@ -14,7 +15,7 @@ namespace backend.DTOs
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public string Password { get; set; } = string.Empty;
     }
 
@@ -28,11 +29,18 @@ namespace backend.DTOs
         public string Password { get; set; } = string.Empty;
     }
 
+    public class UserDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+    }
+
     public class AuthResponseDto
     {
         public string Token { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public DateTime ExpiresAt { get; set; }
+        public UserDto User { get; set; } = null!;
     }
 }
