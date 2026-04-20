@@ -16,10 +16,30 @@ namespace backend.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync(string? search = null, int? categoryId = null, bool? isActive = true)
         {
             var products = await _productRepository.GetAllAsync();
-            return products.Select(MapToResponseDto);
+            
+            var query = products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var lowerSearch = search.ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(lowerSearch) || 
+                                       (p.Description != null && p.Description.ToLower().Contains(lowerSearch)));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == isActive.Value);
+            }
+
+            return query.Select(MapToResponseDto);
         }
 
         public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
@@ -62,12 +82,20 @@ namespace backend.Services
             var existingProduct = await _productRepository.GetByIdAsync(id);
             if (existingProduct == null) return null;
 
-            existingProduct.Name = productDto.Name;
-            existingProduct.Description = productDto.Description;
-            existingProduct.Price = productDto.Price;
-            existingProduct.ImageUrl = productDto.ImageUrl;
-            existingProduct.StockQuantity = productDto.StockQuantity;
-            existingProduct.IsActive = productDto.IsActive;
+            // Partial update logic
+            if (productDto.Name != null) existingProduct.Name = productDto.Name;
+            if (productDto.Description != null) existingProduct.Description = productDto.Description;
+            if (productDto.Price.HasValue) existingProduct.Price = productDto.Price.Value;
+            if (productDto.ImageUrl != null) existingProduct.ImageUrl = productDto.ImageUrl;
+            if (productDto.StockQuantity.HasValue) existingProduct.StockQuantity = productDto.StockQuantity.Value;
+            if (productDto.IsActive.HasValue) existingProduct.IsActive = productDto.IsActive.Value;
+            
+            if (productDto.CategoryId.HasValue)
+            {
+                var category = await _categoryRepository.GetByIdAsync(productDto.CategoryId.Value);
+                if (category == null) throw new InvalidOperationException("Category not found");
+                existingProduct.CategoryId = productDto.CategoryId.Value;
+            }
 
             var updatedProduct = await _productRepository.UpdateAsync(existingProduct);
             return MapToResponseDto(updatedProduct);
@@ -80,6 +108,9 @@ namespace backend.Services
 
         private static ProductResponseDto MapToResponseDto(Product product)
         {
+            var reviews = product.Reviews?.ToList() ?? new List<Review>();
+            var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rating), 1) : 0;
+
             return new ProductResponseDto
             {
                 Id = product.Id,
@@ -91,7 +122,9 @@ namespace backend.Services
                 IsActive = product.IsActive,
                 CreatedAt = product.CreatedAt,
                 CategoryId = product.CategoryId,
-                CategoryName = product.Category?.Name ?? "Unknown"
+                CategoryName = product.Category?.Name ?? "Unknown",
+                AverageRating = averageRating,
+                ReviewCount = reviews.Count
             };
         }
     }

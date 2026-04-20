@@ -7,10 +7,12 @@ namespace backend.Services
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductRepository _productRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository)
         {
             _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<IEnumerable<CategoryResponseDto>> GetAllCategoriesAsync()
@@ -51,6 +53,11 @@ namespace backend.Services
 
         public async Task<bool> DeleteCategoryAsync(int id)
         {
+            var products = await _productRepository.GetByCategoryAsync(id);
+            if (products.Any(p => p.IsActive))
+            {
+                throw new InvalidOperationException("Cannot delete category with active products.");
+            }
             return await _categoryRepository.DeleteAsync(id);
         }
 

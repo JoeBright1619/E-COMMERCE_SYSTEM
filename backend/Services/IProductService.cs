@@ -4,7 +4,7 @@ namespace backend.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync();
+        Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync(string? search = null, int? categoryId = null, bool? isActive = true);
         Task<ProductResponseDto?> GetProductByIdAsync(int id);
         Task<IEnumerable<ProductResponseDto>> GetProductsByCategoryAsync(int categoryId);
         Task<ProductResponseDto> CreateProductAsync(ProductCreateDto productDto);
