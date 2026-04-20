@@ -78,7 +78,7 @@ namespace backend.Data
             // OrderItem configuration
             modelBuilder.Entity<OrderItem>(entity =>
             {
-                entity.Property(e => e.Price).HasPrecision(18, 2);
+                entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
                 entity.HasOne(oi => oi.Order)
                       .WithMany(o => o.OrderItems)
                       .HasForeignKey(oi => oi.OrderId)
