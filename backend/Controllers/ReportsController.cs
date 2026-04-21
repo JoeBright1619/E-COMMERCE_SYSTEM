@@ -30,5 +30,19 @@ namespace backend.Controllers
                 return StatusCode(500, ApiResponse<DashboardStatsDto>.ErrorResult($"Internal server error: {ex.Message}"));
             }
         }
+
+        [HttpGet("orders")]
+        public async Task<ActionResult<ApiResponse<OrderSummaryReportDto>>> GetOrderSummary([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        {
+            try
+            {
+                var result = await _reportService.GetOrderSummaryAsync(startDate, endDate);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<OrderSummaryReportDto>.ErrorResult($"Internal server error: {ex.Message}"));
+            }
+        }
     }
 }

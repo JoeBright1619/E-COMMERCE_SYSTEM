@@ -22,4 +22,20 @@ namespace backend.DTOs
         public string Status { get; set; } = string.Empty;
         public int Count { get; set; }
     }
+
+    public class OrderSummaryReportDto
+    {
+        public decimal TotalRevenue { get; set; }
+        public int TotalOrders { get; set; }
+        public decimal AverageOrderValue { get; set; }
+        public IEnumerable<OrderStatusCountDto> OrdersByStatus { get; set; } = new List<OrderStatusCountDto>();
+        public IEnumerable<DailyOrderSummaryDto> DailySummary { get; set; } = new List<DailyOrderSummaryDto>();
+    }
+
+    public class DailyOrderSummaryDto
+    {
+        public DateTime Date { get; set; }
+        public int OrderCount { get; set; }
+        public decimal Revenue { get; set; }
+    }
 }
