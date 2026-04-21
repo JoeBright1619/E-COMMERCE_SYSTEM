@@ -159,6 +159,20 @@ namespace backend.Services
                     return ApiResponse<OrderResponseDto>.ErrorResult("Order not found");
                 }
 
+                var validTransitions = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "Pending", new List<string> { "Processing", "Cancelled" } },
+                    { "Processing", new List<string> { "Shipped", "Cancelled" } },
+                    { "Shipped", new List<string> { "Delivered", "Cancelled" } },
+                    { "Delivered", new List<string>() },
+                    { "Cancelled", new List<string>() }
+                };
+
+                if (!validTransitions.ContainsKey(order.Status) || !validTransitions[order.Status].Contains(status, StringComparer.OrdinalIgnoreCase))
+                {
+                    return ApiResponse<OrderResponseDto>.ErrorResult($"Invalid status transition from {order.Status} to {status}");
+                }
+
                 order.Status = status;
                 await _orderRepository.UpdateAsync(order);
 
