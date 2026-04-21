@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
 import api from '../services/api';
 import type { ProductResponseDto as Product } from '../types';
+import { withDerivedProductFields } from '../utils/product';
 import './Shop.css';
 
 const SORT_OPTIONS = [
@@ -37,7 +38,7 @@ const Shop = () => {
       try {
         setLoading(true);
         const data = (await api.get('/products')) as unknown as Product[];
-        setProducts(data);
+        setProducts(data.map(withDerivedProductFields));
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
@@ -182,6 +183,8 @@ const Shop = () => {
                       imageUrl={product.imageUrl || ''}
                       categoryName={product.categoryName}
                       isNew={product.isNew}
+                      rating={product.averageRating}
+                      reviews={product.reviewCount}
                     />
                   ))
                 ) : (

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import api from '../../services/api';
 import type { ProductResponseDto as Product } from '../../types';
+import { withDerivedProductFields } from '../../utils/product';
 import './ManageProducts.css';
 
 const ManageProducts = () => {
@@ -16,7 +17,7 @@ const ManageProducts = () => {
     try {
       setLoading(true);
       const data = (await api.get('/products')) as unknown as Product[];
-      setProducts(data);
+      setProducts(data.map(withDerivedProductFields));
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -54,6 +55,8 @@ const ManageProducts = () => {
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -66,6 +69,8 @@ const ManageProducts = () => {
                   <td>{product.name}</td>
                   <td>{product.categoryName}</td>
                   <td>${product.price.toFixed(2)}</td>
+                  <td>{product.stockQuantity}</td>
+                  <td>{product.isActive ? 'Active' : 'Inactive'}</td>
                   <td>
                     <div className="action-buttons">
                       <button className="icon-btn edit-btn" title="Edit">

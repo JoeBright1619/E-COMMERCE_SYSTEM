@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import api from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import type { ProductResponseDto as Product } from '../types';
+import { withDerivedProductFields } from '../utils/product';
 import './ProductDetails.css';
 
 const PRODUCT_STORIES: Record<string, string[]> = {
@@ -91,10 +92,13 @@ const ProductDetails = () => {
           api.get('/products') as unknown as Promise<Product[]>,
         ]);
 
-        setProduct(productData);
+        const normalizedProduct = withDerivedProductFields(productData);
+        const normalizedProducts = productsData.map(withDerivedProductFields);
+
+        setProduct(normalizedProduct);
         setRelatedProducts(
-          productsData
-            .filter((item) => item.id !== productData.id && item.categoryName === productData.categoryName)
+          normalizedProducts
+            .filter((item) => item.id !== normalizedProduct.id && item.categoryName === normalizedProduct.categoryName)
             .slice(0, 3),
         );
       } catch (error) {
@@ -128,8 +132,8 @@ const ProductDetails = () => {
     'A strong fit for customers looking for comfort, utility, and cleaner styling.',
   ];
 
-  const rating = product.isNew ? 4.8 : 4.6;
-  const reviewCount = product.isNew ? 42 : 128;
+  const rating = product.averageRating;
+  const reviewCount = product.reviewCount;
   const estimatedDelivery = product.isNew ? 'Arrives in 3-5 business days' : 'Ready to ship in 1-3 business days';
 
   return (
@@ -287,6 +291,8 @@ const ProductDetails = () => {
                 imageUrl={item.imageUrl || ''}
                 categoryName={item.categoryName}
                 isNew={item.isNew}
+                rating={item.averageRating}
+                reviews={item.reviewCount}
               />
             ))}
           </div>

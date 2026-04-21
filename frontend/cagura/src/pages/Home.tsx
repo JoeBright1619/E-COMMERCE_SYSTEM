@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
 import api from '../services/api';
 import type { ProductResponseDto as Product } from '../types';
+import { withDerivedProductFields } from '../utils/product';
 import './Home.css';
 
 const FALLBACK_PRODUCTS: Product[] = [
@@ -14,7 +15,13 @@ const FALLBACK_PRODUCTS: Product[] = [
     description: 'Lightweight movement for busy commutes and long city days.',
     price: 189.99,
     imageUrl: '/assets/product_sneakers_1776467199864.png',
+    stockQuantity: 20,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    categoryId: 1,
     categoryName: 'Footwear',
+    averageRating: 4.8,
+    reviewCount: 42,
     isNew: true,
   },
   {
@@ -23,7 +30,13 @@ const FALLBACK_PRODUCTS: Product[] = [
     description: 'Clean sound, soft fit, and a clutter-free desk setup.',
     price: 349.5,
     imageUrl: '/assets/product_headphones_1776467120598.png',
+    stockQuantity: 20,
+    isActive: true,
+    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+    categoryId: 2,
     categoryName: 'Audio',
+    averageRating: 4.6,
+    reviewCount: 128,
     isNew: false,
   },
   {
@@ -32,10 +45,16 @@ const FALLBACK_PRODUCTS: Product[] = [
     description: 'Everyday tracking with a softer, more refined silhouette.',
     price: 299.99,
     imageUrl: '/assets/product_watch_1776467103171.png',
+    stockQuantity: 20,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    categoryId: 3,
     categoryName: 'Wearables',
+    averageRating: 4.7,
+    reviewCount: 76,
     isNew: true,
   },
-] as Product[];
+];
 
 const CATEGORY_COPY: Record<string, { eyebrow: string; description: string }> = {
   Footwear: {
@@ -99,7 +118,7 @@ const Home = () => {
     const fetchProducts = async () => {
       try {
         const data = (await api.get('/products')) as unknown as Product[];
-        setProducts(data);
+        setProducts(data.map(withDerivedProductFields));
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
@@ -325,6 +344,8 @@ const Home = () => {
                 imageUrl={product.imageUrl || ''}
                 categoryName={product.categoryName}
                 isNew={product.isNew}
+                rating={product.averageRating}
+                reviews={product.reviewCount}
               />
             ))}
           </div>
