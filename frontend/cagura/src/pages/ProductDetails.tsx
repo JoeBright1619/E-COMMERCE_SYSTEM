@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Leaf, PackageCheck, ShieldCheck, ShoppingCart, Star, Truck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Leaf, PackageCheck, ShieldCheck, ShoppingCart, Star, Truck, Edit2, Trash2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
+import ReviewModal from '../components/ReviewModal';
 import api from '../services/api';
+import { reviewService } from '../services/reviewService';
 import { useCart } from '../contexts/CartContext';
-import type { ProductResponseDto as Product } from '../types';
+import { useAuth } from '../contexts/AuthContext';
+import type { ProductResponseDto as Product, ReviewResponseDto } from '../types';
 import { withDerivedProductFields } from '../utils/product';
 import './ProductDetails.css';
 
@@ -72,11 +76,15 @@ const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { user, isAuthenticated } = useAuth();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<ReviewResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState<ReviewResponseDto | null>(null);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -87,15 +95,17 @@ const ProductDetails = () => {
 
       try {
         setLoading(true);
-        const [productData, productsData] = await Promise.all([
+        const [productData, productsData, reviewsData] = await Promise.all([
           api.get(`/products/${id}`) as unknown as Promise<Product>,
           api.get('/products') as unknown as Promise<Product[]>,
+          reviewService.getProductReviews(Number(id)),
         ]);
 
         const normalizedProduct = withDerivedProductFields(productData);
         const normalizedProducts = productsData.map(withDerivedProductFields);
 
         setProduct(normalizedProduct);
+        setReviews(reviewsData.reviews);
         setRelatedProducts(
           normalizedProducts
             .filter((item) => item.id !== normalizedProduct.id && item.categoryName === normalizedProduct.categoryName)
@@ -135,6 +145,28 @@ const ProductDetails = () => {
   const rating = product.averageRating;
   const reviewCount = product.reviewCount;
   const estimatedDelivery = product.isNew ? 'Arrives in 3-5 business days' : 'Ready to ship in 1-3 business days';
+  const userHasReviewed = user ? reviews.some(r => r.userId === user.id) : false;
+
+  const handleReviewSubmit = async (rating: number, comment: string) => {
+    if (editingReview) {
+      await reviewService.update(editingReview.reviewId, { rating, comment });
+      toast.success('Review updated!');
+    } else {
+      await reviewService.create({ productId: product.id, rating, comment });
+      toast.success('Review submitted!');
+    }
+    const data = await reviewService.getProductReviews(product.id);
+    setReviews(data.reviews);
+  };
+
+  const handleDeleteReview = async (reviewId: number) => {
+    if (window.confirm('Are you sure you want to delete this review?')) {
+      await reviewService.remove(reviewId);
+      const data = await reviewService.getProductReviews(product.id);
+      setReviews(data.reviews);
+      toast.success('Review deleted');
+    }
+  };
 
   return (
     <div className="product-detail-page">
@@ -275,6 +307,48 @@ const ProductDetails = () => {
         </Link>
       </section>
 
+      <section className="detail-reviews-wrapper">
+        <div className="detail-reviews-header">
+          <h2>Customer Reviews</h2>
+          {isAuthenticated && !userHasReviewed && (
+            <button className="btn btn-secondary" onClick={() => setIsReviewModalOpen(true)}>
+              Write a Review
+            </button>
+          )}
+        </div>
+        
+        {reviews.length === 0 ? (
+          <p className="detail-reviews-empty">No reviews yet. Be the first to share your experience!</p>
+        ) : (
+          <div className="detail-reviews-list">
+            {reviews.map(review => (
+              <div key={review.reviewId} className="review-item glass-panel">
+                <div className="review-item-header flex-between mb-sm">
+                  <div className="flex-align-center gap-sm">
+                    <strong>{review.reviewerName}</strong>
+                    <DetailStars rating={review.rating} />
+                  </div>
+                  <span className="text-secondary" style={{ fontSize: '0.85rem' }}>
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className="review-item-comment">{review.comment}</p>
+                {user && user.id === review.userId && (
+                  <div className="review-item-actions mt-3 flex-align-center gap-sm">
+                    <button className="icon-btn text-secondary" onClick={() => { setEditingReview(review); setIsReviewModalOpen(true); }} aria-label="Edit review">
+                      <Edit2 size={16} /> Edit
+                    </button>
+                    <button className="icon-btn" style={{ color: 'var(--accent-red)' }} onClick={() => handleDeleteReview(review.reviewId)} aria-label="Delete review">
+                      <Trash2 size={16} /> Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       {relatedProducts.length > 0 && (
         <section className="detail-related-section">
           <div className="detail-related-header">
@@ -298,6 +372,16 @@ const ProductDetails = () => {
           </div>
         </section>
       )}
+      <ReviewModal 
+        isOpen={isReviewModalOpen}
+        onClose={() => {
+          setIsReviewModalOpen(false);
+          setEditingReview(null);
+        }}
+        onSubmit={handleReviewSubmit}
+        productName={product.name}
+        initialData={editingReview || undefined}
+      />
     </div>
   );
 };

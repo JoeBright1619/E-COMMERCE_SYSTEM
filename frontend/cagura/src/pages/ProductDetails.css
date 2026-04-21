@@ -404,6 +404,47 @@
   font-size: 1.2rem;
 }
 
+.detail-reviews-wrapper {
+  margin-top: 3rem;
+}
+
+.detail-reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.detail-reviews-header h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  letter-spacing: -0.05em;
+}
+
+.detail-reviews-empty {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 2rem 0;
+}
+
+.detail-reviews-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.review-item {
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.review-item-header {
+  margin-bottom: 0.5rem;
+}
+
+.review-item-comment {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
 @media (max-width: 1120px) {
   .detail-hero-shell,
   .detail-assurance-grid,

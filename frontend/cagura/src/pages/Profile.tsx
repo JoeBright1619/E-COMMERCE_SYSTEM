@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Package, User, MapPin } from 'lucide-react';
+import { Package, User, MapPin, Star, Edit2, Trash2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import api from '../services/api';
-import type { OrderResponseDto } from '../types';
+import { reviewService } from '../services/reviewService';
+import type { OrderResponseDto, ReviewResponseDto } from '../types';
+import ReviewModal from '../components/ReviewModal';
 import './Profile.css';
 
 const Profile = () => {
   const { user, logout } = useAuth();
   const [orders, setOrders] = useState<OrderResponseDto[]>([]);
+  const [reviews, setReviews] = useState<ReviewResponseDto[]>([]);
   const [activeTab, setActiveTab] = useState('orders');
   const [loading, setLoading] = useState(true);
+  const [editingReview, setEditingReview] = useState<ReviewResponseDto | null>(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -26,6 +32,38 @@ const Profile = () => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    if (activeTab === 'reviews') {
+      const fetchReviews = async () => {
+        try {
+          const data = await reviewService.getMine();
+          setReviews(data);
+        } catch (error) {
+          console.error('Failed to load reviews:', error);
+        }
+      };
+      fetchReviews();
+    }
+  }, [activeTab]);
+
+  const handleReviewSubmit = async (rating: number, comment: string) => {
+    if (editingReview) {
+      await reviewService.update(editingReview.reviewId, { rating, comment });
+      toast.success('Review updated!');
+      const data = await reviewService.getMine();
+      setReviews(data);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId: number) => {
+    if (window.confirm('Are you sure you want to delete this review?')) {
+      await reviewService.remove(reviewId);
+      const data = await reviewService.getMine();
+      setReviews(data);
+      toast.success('Review deleted');
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -41,6 +79,7 @@ const Profile = () => {
 
       <div className="profile-content">
         <div className="profile-sidebar glass-panel">
+
           <button 
             className={`profile-tab ${activeTab === 'orders' ? 'active' : ''}`}
             onClick={() => setActiveTab('orders')}
@@ -52,6 +91,12 @@ const Profile = () => {
             onClick={() => setActiveTab('details')}
           >
             <User size={20} /> Account Details
+          </button>
+          <button 
+            className={`profile-tab ${activeTab === 'reviews' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reviews')}
+          >
+            <Star size={20} /> My Reviews
           </button>
           <button 
             className={`profile-tab ${activeTab === 'addresses' ? 'active' : ''}`}
@@ -124,8 +169,68 @@ const Profile = () => {
               <p className="text-secondary mt-2">No saved addresses yet.</p>
             </div>
           )}
+
+          {activeTab === 'reviews' && (
+            <div>
+              <h2>My Reviews</h2>
+              <p className="text-secondary mb-4">Manage the reviews you've left for products.</p>
+              {reviews.length === 0 ? (
+                <p className="text-secondary">You haven't reviewed any products yet.</p>
+              ) : (
+                <div className="detail-reviews-list mt-4">
+                  {reviews.map(review => (
+                    <div key={review.reviewId} className="review-item glass-panel">
+                      <div className="flex-between mb-sm">
+                        <div>
+                          <strong>{review.productName}</strong>
+                          <div className="flex-align-center gap-sm mt-1">
+                            <span className="detail-stars detail-stars-sm">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  size={14}
+                                  fill={star <= review.rating ? '#f4b740' : 'transparent'}
+                                  color={star <= review.rating ? '#f4b740' : '#d8ccbf'}
+                                />
+                              ))}
+                            </span>
+                            <span className="text-secondary" style={{ fontSize: '0.85rem' }}>
+                              {new Date(review.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        {review.productImageUrl && (
+                          <img src={review.productImageUrl} alt={review.productName} style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                        )}
+                      </div>
+                      <p className="review-item-comment mt-3">{review.comment}</p>
+                      <div className="review-item-actions mt-3 flex-align-center gap-sm">
+                        <button className="icon-btn text-secondary" onClick={() => { setEditingReview(review); setIsReviewModalOpen(true); }} aria-label="Edit review">
+                          <Edit2 size={16} /> Edit
+                        </button>
+                        <button className="icon-btn" style={{ color: 'var(--accent-red)' }} onClick={() => handleDeleteReview(review.reviewId)} aria-label="Delete review">
+                          <Trash2 size={16} /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
+      
+      <ReviewModal 
+        isOpen={isReviewModalOpen}
+        onClose={() => {
+          setIsReviewModalOpen(false);
+          setEditingReview(null);
+        }}
+        onSubmit={handleReviewSubmit}
+        productName={editingReview?.productName || 'Product'}
+        initialData={editingReview || undefined}
+      />
     </div>
   );
 };
