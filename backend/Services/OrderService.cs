@@ -10,12 +10,14 @@ namespace backend.Services
         private readonly IOrderRepository _orderRepository;
         private readonly ICartService _cartService;
         private readonly IProductRepository _productRepository;
+        private readonly IEmailService _emailService;
 
-        public OrderService(IOrderRepository orderRepository, ICartService cartService, IProductRepository productRepository)
+        public OrderService(IOrderRepository orderRepository, ICartService cartService, IProductRepository productRepository, IEmailService emailService)
         {
             _orderRepository = orderRepository;
             _cartService = cartService;
             _productRepository = productRepository;
+            _emailService = emailService;
         }
 
         public async Task<ApiResponse<OrderResponseDto>> CreateOrderAsync(int userId)
@@ -73,6 +75,24 @@ namespace backend.Services
 
                 // Reload to get navigation properties
                 var finalOrder = await _orderRepository.GetByIdAsync(createdOrder.Id);
+
+                if (finalOrder?.User != null && !string.IsNullOrEmpty(finalOrder.User.Email))
+                {
+                    try
+                    {
+                        await _emailService.SendOrderConfirmationAsync(
+                            finalOrder.User.Email,
+                            finalOrder.User.Name,
+                            finalOrder.Id,
+                            finalOrder.TotalAmount
+                        );
+                    }
+                    catch (Exception emailEx)
+                    {
+                        // We shouldn't fail the order creation because the email failed
+                        Console.WriteLine($"Failed to send confirmation email: {emailEx.Message}");
+                    }
+                }
 
                 return ApiResponse<OrderResponseDto>.SuccessResult(MapToResponseDto(finalOrder!), "Order created successfully");
             }
