@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       const data = (await api.post('/auth/login', { email, password })) as any;
-      login(data.token, data.user);
+      login(data);
       navigate('/');
     } catch (err: any) {
       setError(err.message || 'Invalid email or password');

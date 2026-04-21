@@ -37,6 +37,14 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      localStorage.removeItem('cagura_token');
+      localStorage.removeItem('cagura_user');
+      localStorage.removeItem('cagura_expires_at');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
     const message = error.response?.data?.message || error.message || 'An unexpected error occurred';
     return Promise.reject(new Error(message));
   }
