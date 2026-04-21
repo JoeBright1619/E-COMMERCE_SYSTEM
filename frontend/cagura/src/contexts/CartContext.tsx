@@ -2,53 +2,70 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import type { ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../services/api';
-
-import type { ProductResponseDto as Product } from '../types';
-
-export interface CartItem {
-  productId: number;
-  quantity: number;
-  product: Product;
-}
+import { useAuth } from './AuthContext';
+import type { CartAddDto, CartItemResponseDto, CartResponseDto, CartUpdateDto } from '../types';
 
 interface CartContextType {
-  items: CartItem[];
+  items: CartItemResponseDto[];
   itemCount: number;
   totalPrice: number;
   isLoading: boolean;
   fetchCart: () => Promise<void>;
   addToCart: (productId: number, quantity?: number) => Promise<void>;
-  removeFromCart: (productId: number) => Promise<void>;
+  updateCartItem: (cartItemId: number, quantity: number) => Promise<void>;
+  removeFromCart: (cartItemId: number) => Promise<void>;
   clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const { isAuthenticated } = useAuth();
+  const [items, setItems] = useState<CartItemResponseDto[]>([]);
+  const [itemCount, setItemCount] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const applyCartState = useCallback((cart: CartResponseDto) => {
+    setItems(cart.items);
+    setItemCount(cart.totalItems);
+    setTotalPrice(cart.totalAmount);
+  }, []);
+
   const fetchCart = useCallback(async () => {
+    if (!isAuthenticated) {
+      setItems([]);
+      setItemCount(0);
+      setTotalPrice(0);
+      return;
+    }
+
     try {
       setIsLoading(true);
-      // Calls our API (intercepted by mock)
-      const data = (await api.get('/cart')) as unknown as CartItem[];
-      setItems(data);
+      const data = (await api.get('/cart')) as unknown as CartResponseDto;
+      applyCartState(data);
     } catch (error) {
       console.error('Failed to fetch cart:', error);
+      toast.error('Failed to load your cart');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [applyCartState, isAuthenticated]);
 
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
 
   const addToCart = async (productId: number, quantity: number = 1) => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to your cart');
+      return;
+    }
+
     try {
-      const data = (await api.post('/cart', { productId, quantity })) as unknown as CartItem[];
-      setItems(data);
+      const payload: CartAddDto = { productId, quantity };
+      await api.post('/cart', payload);
+      await fetchCart();
       toast.success('Item added to cart');
     } catch (error) {
       console.error('Failed to add to cart:', error);
@@ -56,10 +73,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const removeFromCart = async (productId: number) => {
+  const updateCartItem = async (cartItemId: number, quantity: number) => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to update your cart');
+      return;
+    }
+
     try {
-      const data = (await api.delete(`/cart/${productId}`)) as unknown as CartItem[];
-      setItems(data);
+      const payload: CartUpdateDto = { quantity };
+      await api.put(`/cart/${cartItemId}`, payload);
+      await fetchCart();
+    } catch (error) {
+      console.error('Failed to update cart item:', error);
+      toast.error('Failed to update quantity');
+    }
+  };
+
+  const removeFromCart = async (cartItemId: number) => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to update your cart');
+      return;
+    }
+
+    try {
+      await api.delete(`/cart/${cartItemId}`);
+      await fetchCart();
       toast.success('Item removed from cart');
     } catch (error) {
       console.error('Failed to remove from cart:', error);
@@ -69,14 +107,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = () => {
     setItems([]);
+    setItemCount(0);
+    setTotalPrice(0);
   };
-
-  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
-  const totalPrice = items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
   return (
     <CartContext.Provider value={{ 
-      items, itemCount, totalPrice, isLoading, fetchCart, addToCart, removeFromCart, clearCart 
+      items, itemCount, totalPrice, isLoading, fetchCart, addToCart, updateCartItem, removeFromCart, clearCart 
     }}>
       {children}
     </CartContext.Provider>

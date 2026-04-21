@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, ArrowRight } from 'lucide-react';
+import { Trash2, ArrowRight, Minus, Plus } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import './Cart.css';
 
 const Cart = () => {
-  const { items, totalPrice, removeFromCart } = useCart();
+  const { items, totalPrice, removeFromCart, updateCartItem } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -34,21 +34,37 @@ const Cart = () => {
       <div className="cart-container">
         <div className="cart-items glass-panel">
           {items.map(item => (
-            <div key={item.productId} className="cart-item">
-              <img src={item.product.imageUrl || undefined} alt={item.product.name} className="cart-item-image" />
+            <div key={item.id} className="cart-item">
+              <img src={item.productImageUrl || undefined} alt={item.productName} className="cart-item-image" />
               <div className="cart-item-info">
-                <h3>{item.product.name}</h3>
-                <span className="cart-item-category">{item.product.categoryName}</span>
+                <h3>{item.productName}</h3>
+                {item.productDescription && <span className="cart-item-category">{item.productDescription}</span>}
               </div>
               <div className="cart-item-quantity">
-                Qty: {item.quantity}
+                <button
+                  type="button"
+                  className="quantity-btn"
+                  onClick={() => updateCartItem(item.id, Math.max(1, item.quantity - 1))}
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={16} />
+                </button>
+                <span>Qty: {item.quantity}</span>
+                <button
+                  type="button"
+                  className="quantity-btn"
+                  onClick={() => updateCartItem(item.id, item.quantity + 1)}
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={16} />
+                </button>
               </div>
               <div className="cart-item-price">
-                ${(item.product.price * item.quantity).toFixed(2)}
+                ${item.subtotal.toFixed(2)}
               </div>
               <button 
                 className="remove-btn" 
-                onClick={() => removeFromCart(item.productId)}
+                onClick={() => removeFromCart(item.id)}
                 aria-label="Remove item"
               >
                 <Trash2 size={20} />

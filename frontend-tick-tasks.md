@@ -12,12 +12,12 @@ This checklist breaks down the actionable tasks from frontend-implementation-tas
 - [x] Refactor UI components to use backend DTO field names (`name`, `imageUrl`, `categoryName`)
 - [x] Decide/implement `isNew` logic (from `createdAt` or remove)
 - [x] Update product rendering in `Home.tsx`, `Shop.tsx`, `ProductDetails.tsx`, `ProductCard.tsx`, `ManageProducts.tsx`
-- [ ] Redesign cart types around backend DTOs (`CartResponseDto`, `CartItemResponseDto`)
-- [ ] Store backend `cartItemId`/`id` in cart state
-- [ ] Update `fetchCart()` to use backend DTO shape
-- [ ] Update cart add/remove/update logic to use backend contract
-- [ ] Do not auto-fetch cart for unauthenticated users
-- [ ] Decide guest-cart strategy (no guest cart or merge after login)
+- [x] Redesign cart types around backend DTOs (`CartResponseDto`, `CartItemResponseDto`)
+- [x] Store backend `cartItemId`/`id` in cart state
+- [x] Update `fetchCart()` to use backend DTO shape
+- [x] Update cart add/remove/update logic to use backend contract
+- [x] Do not auto-fetch cart for unauthenticated users
+- [x] Decide guest-cart strategy (no guest cart or merge after login)
 - [ ] Update checkout to call `POST /api/orders` with no payload
 - [ ] Replace mock profile order history with `GET /api/orders/my`
 - [ ] Update admin orders page to use `GET /api/orders` and `PUT /api/orders/{id}/status`

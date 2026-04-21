@@ -118,14 +118,14 @@ const Checkout = () => {
           <h3>Order Summary</h3>
           <div className="summary-items">
             {items.map(item => (
-              <div key={item.productId} className="summary-item">
-                <img src={item.product.imageUrl || undefined} alt={item.product.name} />
+              <div key={item.id} className="summary-item">
+                <img src={item.productImageUrl || undefined} alt={item.productName} />
                 <div className="summary-item-info">
-                  <h4>{item.product.name}</h4>
+                  <h4>{item.productName}</h4>
                   <span>Qty: {item.quantity}</span>
                 </div>
                 <div className="summary-item-price">
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  ${item.subtotal.toFixed(2)}
                 </div>
               </div>
             ))}
