@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
 import api from '../services/api';
-import type { Product } from '../contexts/CartContext';
+import type { ProductResponseDto as Product } from '../types';
 import './Shop.css';
 
 const SORT_OPTIONS = [
@@ -48,7 +48,7 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const categories = ['All', ...Array.from(new Set(products.map((product) => product.category)))];
+  const categories = ['All', ...Array.from(new Set(products.map((product) => product.categoryName)))];
   const activeCategory = categories.find((category) => category.toLowerCase() === categoryParam.toLowerCase()) ?? 'All';
 
   const productsByView = view === 'new'
@@ -61,10 +61,10 @@ const Shop = () => {
 
   const filteredProducts = activeCategory === 'All'
     ? productsByView
-    : productsByView.filter((product) => product.category === activeCategory);
+    : productsByView.filter((product) => product.categoryName === activeCategory);
 
   const searchedProducts = query
-    ? filteredProducts.filter((product) => product.title.toLowerCase().includes(query) || product.description.toLowerCase().includes(query))
+    ? filteredProducts.filter((product) => product.name.toLowerCase().includes(query) || (product.description || '').toLowerCase().includes(query))
     : filteredProducts;
 
   const finalProducts = [...searchedProducts].sort((first, second) => {
@@ -177,10 +177,10 @@ const Shop = () => {
                     <ProductCard
                       key={product.id}
                       id={product.id}
-                      title={product.title}
+                      name={product.name}
                       price={product.price}
-                      image={product.image}
-                      category={product.category}
+                      imageUrl={product.imageUrl || ''}
+                      categoryName={product.categoryName}
                       isNew={product.isNew}
                     />
                   ))

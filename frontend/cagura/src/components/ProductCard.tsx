@@ -5,16 +5,16 @@ import './ProductCard.css';
 
 interface ProductCardProps {
   id: number;
-  title: string;
+  name: string;
   price: number;
-  image: string;
-  category: string;
+  imageUrl: string;
+  categoryName: string;
   isNew?: boolean;
   rating?: number;
   reviews?: number;
 }
 
-const ProductCard = ({ id, title, price, image, category, isNew, rating = 4.5, reviews = 128 }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, imageUrl, categoryName, isNew, rating = 4.5, reviews = 128 }: ProductCardProps) => {
   const { addToCart } = useCart();
 
   const renderStars = (rating: number) => {
@@ -40,7 +40,7 @@ const ProductCard = ({ id, title, price, image, category, isNew, rating = 4.5, r
           <Heart size={16} />
         </button>
         <Link to={`/product/${id}`}>
-          <img src={image} alt={title} className="product-image" />
+          <img src={imageUrl} alt={name} className="product-image" />
         </Link>
         <button
           className="product-cart-overlay"
@@ -52,9 +52,9 @@ const ProductCard = ({ id, title, price, image, category, isNew, rating = 4.5, r
       </div>
       
       <div className="product-info">
-        <span className="product-category">{category}</span>
+        <span className="product-category">{categoryName}</span>
         <Link to={`/product/${id}`} className="product-title-link">
-          <h3 className="product-title">{title}</h3>
+          <h3 className="product-title">{name}</h3>
         </Link>
         
         <div className="product-rating">

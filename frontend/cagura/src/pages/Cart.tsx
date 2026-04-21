@@ -35,10 +35,10 @@ const Cart = () => {
         <div className="cart-items glass-panel">
           {items.map(item => (
             <div key={item.productId} className="cart-item">
-              <img src={item.product.image} alt={item.product.title} className="cart-item-image" />
+              <img src={item.product.imageUrl || undefined} alt={item.product.name} className="cart-item-image" />
               <div className="cart-item-info">
-                <h3>{item.product.title}</h3>
-                <span className="cart-item-category">{item.product.category}</span>
+                <h3>{item.product.name}</h3>
+                <span className="cart-item-category">{item.product.categoryName}</span>
               </div>
               <div className="cart-item-quantity">
                 Qty: {item.quantity}

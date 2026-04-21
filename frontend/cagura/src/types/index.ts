@@ -63,6 +63,7 @@ export interface ProductResponseDto {
     categoryName: string;
     averageRating: number;
     reviewCount: number;
+    isNew?: boolean;
 }
 
 // Category

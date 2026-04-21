@@ -5,7 +5,7 @@ import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
 import api from '../services/api';
 import { useCart } from '../contexts/CartContext';
-import type { Product } from '../contexts/CartContext';
+import type { ProductResponseDto as Product } from '../types';
 import './ProductDetails.css';
 
 const PRODUCT_STORIES: Record<string, string[]> = {
@@ -38,17 +38,17 @@ const PRODUCT_STORIES: Record<string, string[]> = {
 
 const DETAIL_PROMISES = [
   {
-    title: 'Free Shipping',
+    name: 'Free Shipping',
     description: 'Qualifying orders over $100 ship free with tracking included.',
     icon: Truck,
   },
   {
-    title: '30-Day Returns',
+    name: '30-Day Returns',
     description: 'Try it at home and return it easily if the fit is not right.',
     icon: PackageCheck,
   },
   {
-    title: 'Secure Checkout',
+    name: 'Secure Checkout',
     description: 'Protected payment flow designed for quick, low-friction purchasing.',
     icon: ShieldCheck,
   },
@@ -94,7 +94,7 @@ const ProductDetails = () => {
         setProduct(productData);
         setRelatedProducts(
           productsData
-            .filter((item) => item.id !== productData.id && item.category === productData.category)
+            .filter((item) => item.id !== productData.id && item.categoryName === productData.categoryName)
             .slice(0, 3),
         );
       } catch (error) {
@@ -122,7 +122,7 @@ const ProductDetails = () => {
     return <div className="page-loader">Product not found</div>;
   }
 
-  const storyPoints = PRODUCT_STORIES[product.category] ?? [
+  const storyPoints = PRODUCT_STORIES[product.categoryName] ?? [
     'Chosen to make everyday shopping feel more thoughtful and less overwhelming.',
     'Balanced between practical value and a softer premium presentation.',
     'A strong fit for customers looking for comfort, utility, and cleaner styling.',
@@ -142,7 +142,7 @@ const ProductDetails = () => {
         <div className="detail-media-column">
           <div className="detail-image-frame">
             {product.isNew && <span className="detail-badge">New Arrival</span>}
-            <img src={product.image} alt={product.title} className="detail-main-image" />
+            <img src={product.imageUrl || undefined} alt={product.name} className="detail-main-image" />
           </div>
 
           <div className="detail-media-notes">
@@ -166,12 +166,12 @@ const ProductDetails = () => {
             <span>/</span>
             <Link to="/shop">Shop</Link>
             <span>/</span>
-            <Link to={`/shop?category=${encodeURIComponent(product.category)}`}>{product.category}</Link>
+            <Link to={`/shop?category=${encodeURIComponent(product.categoryName)}`}>{product.categoryName}</Link>
           </div>
 
           <div className="detail-header-block">
-            <span className="detail-category-pill">{product.category}</span>
-            <h1 className="detail-title">{product.title}</h1>
+            <span className="detail-category-pill">{product.categoryName}</span>
+            <h1 className="detail-title">{product.name}</h1>
             <p className="detail-subtitle">
               Premium essentials with softer styling, practical comfort, and the kind of polish that makes everyday shopping feel effortless.
             </p>
@@ -229,7 +229,7 @@ const ProductDetails = () => {
               </div>
               <div className="detail-meta-item">
                 <span className="detail-meta-label">Category</span>
-                <span className="detail-meta-value">{product.category}</span>
+                <span className="detail-meta-value">{product.categoryName}</span>
               </div>
             </div>
           </div>
@@ -246,12 +246,12 @@ const ProductDetails = () => {
       </section>
 
       <section className="detail-assurance-grid">
-        {DETAIL_PROMISES.map(({ title, description, icon: Icon }) => (
-          <article key={title} className="detail-assurance-card">
+        {DETAIL_PROMISES.map(({ name, description, icon: Icon }) => (
+          <article key={name} className="detail-assurance-card">
             <span className="detail-assurance-icon">
               <Icon size={18} />
             </span>
-            <h3>{title}</h3>
+            <h3>{name}</h3>
             <p>{description}</p>
           </article>
         ))}
@@ -266,8 +266,8 @@ const ProductDetails = () => {
             and short, helpful messages around delivery, returns, and comfort.
           </p>
         </div>
-        <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="detail-editorial-link">
-          Browse More {product.category} <ArrowRight size={16} />
+        <Link to={`/shop?category=${encodeURIComponent(product.categoryName)}`} className="detail-editorial-link">
+          Browse More {product.categoryName} <ArrowRight size={16} />
         </Link>
       </section>
 
@@ -275,17 +275,17 @@ const ProductDetails = () => {
         <section className="detail-related-section">
           <div className="detail-related-header">
             <p className="detail-story-kicker">Keep Exploring</p>
-            <h2>More in {product.category}</h2>
+            <h2>More in {product.categoryName}</h2>
           </div>
           <div className="detail-related-grid">
             {relatedProducts.map((item) => (
               <ProductCard
                 key={item.id}
                 id={item.id}
-                title={item.title}
+                name={item.name}
                 price={item.price}
-                image={item.image}
-                category={item.category}
+                imageUrl={item.imageUrl || ''}
+                categoryName={item.categoryName}
                 isNew={item.isNew}
               />
             ))}

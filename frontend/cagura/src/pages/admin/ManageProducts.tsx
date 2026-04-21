@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import api from '../../services/api';
-import type { Product } from '../../contexts/CartContext';
+import type { ProductResponseDto as Product } from '../../types';
 import './ManageProducts.css';
 
 const ManageProducts = () => {
@@ -61,10 +61,10 @@ const ManageProducts = () => {
               {products.map(product => (
                 <tr key={product.id}>
                   <td>
-                    <img src={product.image} alt={product.title} className="table-img" />
+                    <img src={product.imageUrl || undefined} alt={product.name} className="table-img" />
                   </td>
-                  <td>{product.title}</td>
-                  <td>{product.category}</td>
+                  <td>{product.name}</td>
+                  <td>{product.categoryName}</td>
                   <td>${product.price.toFixed(2)}</td>
                   <td>
                     <div className="action-buttons">

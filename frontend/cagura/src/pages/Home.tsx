@@ -4,38 +4,38 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
 import api from '../services/api';
-import type { Product } from '../contexts/CartContext';
+import type { ProductResponseDto as Product } from '../types';
 import './Home.css';
 
 const FALLBACK_PRODUCTS: Product[] = [
   {
     id: 3,
-    title: 'AeroGlide Future Sneakers',
+    name: 'AeroGlide Future Sneakers',
     description: 'Lightweight movement for busy commutes and long city days.',
     price: 189.99,
-    image: '/assets/product_sneakers_1776467199864.png',
-    category: 'Footwear',
+    imageUrl: '/assets/product_sneakers_1776467199864.png',
+    categoryName: 'Footwear',
     isNew: true,
   },
   {
     id: 2,
-    title: 'SonicPro Wireless Headphones',
+    name: 'SonicPro Wireless Headphones',
     description: 'Clean sound, soft fit, and a clutter-free desk setup.',
     price: 349.5,
-    image: '/assets/product_headphones_1776467120598.png',
-    category: 'Audio',
+    imageUrl: '/assets/product_headphones_1776467120598.png',
+    categoryName: 'Audio',
     isNew: false,
   },
   {
     id: 1,
-    title: 'Aura Sync Smartwatch',
+    name: 'Aura Sync Smartwatch',
     description: 'Everyday tracking with a softer, more refined silhouette.',
     price: 299.99,
-    image: '/assets/product_watch_1776467103171.png',
-    category: 'Wearables',
+    imageUrl: '/assets/product_watch_1776467103171.png',
+    categoryName: 'Wearables',
     isNew: true,
   },
-];
+] as Product[];
 
 const CATEGORY_COPY: Record<string, { eyebrow: string; description: string }> = {
   Footwear: {
@@ -134,16 +134,16 @@ const Home = () => {
     };
   }, [products]); // Re-run when products load so new cards are observed
 
-  const featuredProducts = products.filter(p => ["Men's Clothing", "Women's Clothing"].includes(p.category) || p.isNew).slice(0, 4);
-  const heroLead = products.find((product) => product.category === "Men's Clothing") ?? products[0];
-  const heroSupport = products.find((product) => product.category === "Women's Clothing") ?? products[1] ?? heroLead;
+  const featuredProducts = products.filter(p => ["Men's Clothing", "Women's Clothing"].includes(p.categoryName) || p.isNew).slice(0, 4);
+  const heroLead = products.find((product) => product.categoryName === "Men's Clothing") ?? products[0];
+  const heroSupport = products.find((product) => product.categoryName === "Women's Clothing") ?? products[1] ?? heroLead;
   const newestProducts = products.filter((product) => product.isNew).slice(0, 2);
-  const spotlightCategories = ["Men's Clothing", "Women's Clothing", "Footwear"].filter(cat => products.some(p => p.category === cat));
+  const spotlightCategories = ["Men's Clothing", "Women's Clothing", "Footwear"].filter(cat => products.some(p => p.categoryName === cat));
   
   // Fallback to dynamic if hardcoded ones aren't available yet
   const finalSpotlightCategories = spotlightCategories.length >= 3 
     ? spotlightCategories 
-    : Array.from(new Set(products.map((product) => product.category))).slice(0, 3);
+    : Array.from(new Set(products.map((product) => product.categoryName))).slice(0, 3);
 
   return (
     <div className="home-page">
@@ -159,8 +159,8 @@ const Home = () => {
             </p>
 
             <div className="hero-actions">
-              <Link to={`/shop?category=${encodeURIComponent(heroLead?.category ?? 'Footwear')}`} className="btn btn-primary">
-                Shop {heroLead?.category ?? 'Collection'}
+              <Link to={`/shop?category=${encodeURIComponent(heroLead?.categoryName ?? 'Footwear')}`} className="btn btn-primary">
+                Shop {heroLead?.categoryName ?? 'Collection'}
               </Link>
               <Link to="/shop?view=new" className="btn btn-secondary">
                 Explore What&apos;s New
@@ -186,11 +186,11 @@ const Home = () => {
           <div className="hero-stage">
             <article className="hero-panel hero-panel-large">
               <div className="hero-panel-image">
-                <img src={heroLead?.image} alt={heroLead?.title} />
+                <img src={heroLead?.imageUrl || undefined} alt={heroLead?.name} />
               </div>
               <div className="hero-panel-content">
-                <p className="hero-panel-eyebrow">{heroLead?.category}</p>
-                <h2>{heroLead?.title}</h2>
+                <p className="hero-panel-eyebrow">{heroLead?.categoryName}</p>
+                <h2>{heroLead?.name}</h2>
                 <p>{heroLead?.description}</p>
                 <Link to={`/product/${heroLead?.id ?? 1}`} className="hero-inline-link">
                   View Product <ArrowRight size={16} />
@@ -201,13 +201,13 @@ const Home = () => {
             <article className="hero-panel hero-panel-accent">
               <div className="hero-panel-copy">
                 <p className="hero-panel-eyebrow">Now Trending</p>
-                <h3>{heroSupport?.title}</h3>
+                <h3>{heroSupport?.name}</h3>
                 <p>{heroSupport?.description}</p>
-                <Link to={`/shop?category=${encodeURIComponent(heroSupport?.category ?? 'Audio')}`} className="hero-inline-link light">
-                  Shop {heroSupport?.category ?? 'Audio'} <ArrowRight size={16} />
+                <Link to={`/shop?category=${encodeURIComponent(heroSupport?.categoryName ?? 'Audio')}`} className="hero-inline-link light">
+                  Shop {heroSupport?.categoryName ?? 'Audio'} <ArrowRight size={16} />
                 </Link>
               </div>
-              <img src={heroSupport?.image} alt={heroSupport?.title} className="hero-accent-image" />
+              <img src={heroSupport?.imageUrl || undefined} alt={heroSupport?.name} className="hero-accent-image" />
             </article>
           </div>
         </div>
@@ -232,7 +232,7 @@ const Home = () => {
 
         <div className="collection-grid">
           {finalSpotlightCategories.map((category, index) => {
-            const product = products.find((item) => item.category === category);
+            const product = products.find((item) => item.categoryName === category);
             const copy = CATEGORY_COPY[category] ?? {
               eyebrow: `Edit 0${index + 1}`,
               description: 'A curated set of products selected to keep the browsing experience focused and easy to scan.',
@@ -245,7 +245,7 @@ const Home = () => {
                 className="collection-card"
               >
                 <div className="collection-card-media">
-                  <img src={product?.image} alt={product?.title ?? category} />
+                  <img src={product?.imageUrl || undefined} alt={product?.name ?? category} />
                 </div>
                 <div className="collection-card-content">
                   <p className="collection-card-eyebrow">{copy.eyebrow}</p>
@@ -287,11 +287,11 @@ const Home = () => {
             {newestProducts.map((product) => (
               <Link key={product.id} to={`/product/${product.id}`} className="arrival-card">
                 <div className="arrival-media">
-                  <img src={product.image} alt={product.title} />
+                  <img src={product.imageUrl || undefined} alt={product.name} />
                 </div>
                 <div className="arrival-copy">
-                  <span>{product.category}</span>
-                  <h3>{product.title}</h3>
+                  <span>{product.categoryName}</span>
+                  <h3>{product.name}</h3>
                   <p>${product.price.toFixed(2)}</p>
                 </div>
               </Link>
@@ -320,10 +320,10 @@ const Home = () => {
               <ProductCard
                 key={product.id}
                 id={product.id}
-                title={product.title}
+                name={product.name}
                 price={product.price}
-                image={product.image}
-                category={product.category}
+                imageUrl={product.imageUrl || ''}
+                categoryName={product.categoryName}
                 isNew={product.isNew}
               />
             ))}
