@@ -1,0 +1,47 @@
+.promo-banner {
+  background: var(--accent-primary);
+  color: white;
+  padding: 2rem 2rem;
+  text-align: center;
+  border-radius: var(--border-radius-lg);
+  margin: 1.5rem auto;
+  max-width: 1400px;
+  width: 95%;
+  animation: slideDown 0.6s ease-out;
+}
+
+.promo-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.promo-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.promo-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.95;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .promo-banner {
+    padding: 1.5rem 1rem;
+    margin: 1rem auto;
+  }
+  
+  .promo-title {
+    font-size: 1.5rem;
+  }
+  
+  .promo-subtitle {
+    font-size: 0.95rem;
+  }
+}

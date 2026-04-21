@@ -1,4 +1,40 @@
-/* Basic reset and global styles for the team to build upon */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-primary: #f0f7f9;
+  --bg-secondary: #f7fbfd;
+  --bg-tertiary: #d8edf3;
+  --bg-dark: #fafdfe;
+  --bg-glass: rgba(240, 247, 249, 0.88);
+
+  --text-primary: #1f1a15;
+  --text-secondary: #6c6258;
+  --text-tertiary: #9b8f84;
+
+  --accent-primary: #1f5c3c;
+  --accent-secondary: #18452d;
+  --accent-light: #5f8f73;
+  --accent-lighter: #edf5ef;
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+
+  --accent-gradient: linear-gradient(135deg, #1f5c3c 0%, #3d7a59 100%);
+  --accent-glow: rgba(31, 92, 60, 0.14);
+
+  --border-radius: 8px;
+  --border-radius-lg: 24px;
+  --transition-speed: 0.3s;
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 12px 28px rgba(34, 28, 23, 0.08);
+  --shadow-lg: 0 20px 42px rgba(34, 28, 23, 0.11);
+  --shadow-xl: 0 30px 65px rgba(34, 28, 23, 0.12);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,7 +42,304 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #212529;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8fbfd;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  overflow-x: hidden;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+.glass-panel {
+  background: rgba(240, 247, 249, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(180, 220, 235, 0.7);
+  border-radius: var(--border-radius-lg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a8cdd8;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7fb5c5;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all var(--transition-speed) ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1f5c3c 0%, #346d4e 100%);
+  color: white;
+  box-shadow: 0 14px 32px rgba(31, 92, 60, 0.22);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(31, 92, 60, 0.28);
+  background: var(--accent-secondary);
+}
+
+.btn-secondary {
+  background: rgba(255, 253, 248, 0.8);
+  color: var(--text-primary);
+  border: 1px solid var(--bg-tertiary);
+}
+
+.btn-secondary:hover {
+  background: white;
+  transform: translateY(-2px);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.text-gradient {
+  color: var(--accent-primary);
+}
+
+.text-highlight {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #0ab39c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-right: 0.05em; /* Prevent clipping */
+}
+
+.page-background {
+  width: 100%;
+  min-height: calc(100vh - 300px);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grid {
+  display: grid;
+}
+
+.section {
+  padding: 4rem 1rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 2rem 1rem;
+  }
+
+  .section-title {
+    font-size: 1.875rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+}
+
+/* --- Added Animations & Enhancements --- */
+
+/* Hover effects for product cards */
+.product-card {
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease !important;
+}
+
+.product-card:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.product-image-container {
+  overflow: hidden;
+}
+
+.product-card img, .product-image-container img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card:hover img, .product-card:hover .product-image-container img {
+  transform: scale(1.08);
+}
+
+/* Scroll Reveal Animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Watermark Background */
+.watermark-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.watermark-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18vw;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  color: rgba(31, 92, 60, 0.025);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+

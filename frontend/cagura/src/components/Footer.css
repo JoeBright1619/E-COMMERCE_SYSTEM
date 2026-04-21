@@ -1,0 +1,232 @@
+.footer {
+  margin-top: 6rem;
+  padding: 0 2rem 2rem;
+}
+
+.footer-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at top right, rgba(31, 92, 60, 0.2), transparent 26%),
+    linear-gradient(135deg, #f2eadf 0%, #f8f3eb 100%);
+  border: 1px solid rgba(231, 221, 208, 0.95);
+  box-shadow: var(--shadow-lg);
+}
+
+.footer-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(231, 221, 208, 0.9);
+}
+
+.footer-eyebrow {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.footer-hero-copy h2 {
+  margin-top: 0.9rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.footer-hero-copy p:last-child {
+  margin-top: 1rem;
+  max-width: 60ch;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.footer-signup-card,
+.footer-links-col {
+  border-radius: 26px;
+  border: 1px solid rgba(231, 221, 208, 0.95);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.footer-signup-card {
+  padding: 1.5rem;
+}
+
+.footer-signup-label {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.footer-signup-card h3 {
+  margin-top: 0.8rem;
+  font-size: 1.45rem;
+  line-height: 1.3;
+}
+
+.footer-signup-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.footer-signup-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.95rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(231, 221, 208, 0.95);
+  background: white;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-logo {
+  font-size: 1.85rem;
+  letter-spacing: -0.04em;
+}
+
+.footer-desc {
+  max-width: 48ch;
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(231, 221, 208, 0.95);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.social-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(31, 92, 60, 0.3);
+  color: var(--accent-primary);
+}
+
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.footer-links-col {
+  padding: 1.35rem;
+}
+
+.footer-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.footer-links-col ul {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.footer-links-col a {
+  color: var(--text-secondary);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-links-col a:hover {
+  color: var(--accent-primary);
+  transform: translateX(2px);
+}
+
+.footer-bottom {
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(231, 221, 208, 0.9);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+.footer-legal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.footer-legal a:hover {
+  color: var(--accent-primary);
+}
+
+.separator {
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 1024px) {
+  .footer-hero,
+  .footer-main {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-links-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 0 1rem 1rem;
+  }
+
+  .footer-container {
+    padding: 1.5rem;
+  }
+
+  .footer-signup-form,
+  .footer-bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer-links-grid {
+    grid-template-columns: 1fr;
+  }
+}
