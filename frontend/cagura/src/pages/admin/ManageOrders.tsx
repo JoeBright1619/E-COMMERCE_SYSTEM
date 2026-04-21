@@ -1,18 +1,10 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../services/api';
-
-interface Order {
-  id: number;
-  customerName: string;
-  email: string;
-  date: string;
-  total: number;
-  status: string;
-}
+import type { OrderResponseDto, UpdateStatusDto } from '../../types';
 
 const ManageOrders = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +13,7 @@ const ManageOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await api.get('/admin/orders');
+      const data = (await api.get('/orders')) as unknown as OrderResponseDto[];
       setOrders(data);
     } catch (error) {
       toast.error('Failed to load orders');
@@ -32,8 +24,9 @@ const ManageOrders = () => {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      await api.put(`/admin/orders/${id}`, { status: newStatus });
-      setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
+      const payload: UpdateStatusDto = { status: newStatus };
+      await api.put(`/orders/${id}/status`, payload);
+      setOrders(orders.map(o => o.orderId === id ? { ...o, status: newStatus } : o));
       toast.success(`Order #${id} marked as ${newStatus}`);
     } catch (error) {
       toast.error('Failed to update status');
@@ -56,6 +49,7 @@ const ManageOrders = () => {
                 <th>Order ID</th>
                 <th>Customer</th>
                 <th>Date</th>
+                <th>Items</th>
                 <th>Total</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -63,14 +57,17 @@ const ManageOrders = () => {
             </thead>
             <tbody>
               {orders.map(order => (
-                <tr key={order.id}>
-                  <td>#{order.id}</td>
+                <tr key={order.orderId}>
+                  <td>#{order.orderId}</td>
                   <td>
                     <div>{order.customerName}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.email}</div>
+                    {order.shippingAddress && (
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.shippingAddress}</div>
+                    )}
                   </td>
-                  <td>{order.date}</td>
-                  <td>${order.total.toFixed(2)}</td>
+                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td>{order.itemCount}</td>
+                  <td>${order.totalAmount.toFixed(2)}</td>
                   <td>
                     <span className={`status-badge ${order.status.toLowerCase()}`}>
                       {order.status}
@@ -79,9 +76,10 @@ const ManageOrders = () => {
                   <td>
                     <select 
                       value={order.status}
-                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                      onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
                       style={{ padding: '0.5rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}
                     >
+                      <option value="Pending">Pending</option>
                       <option value="Processing">Processing</option>
                       <option value="Shipped">Shipped</option>
                       <option value="Delivered">Delivered</option>

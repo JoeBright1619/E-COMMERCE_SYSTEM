@@ -18,10 +18,10 @@ This checklist breaks down the actionable tasks from frontend-implementation-tas
 - [x] Update cart add/remove/update logic to use backend contract
 - [x] Do not auto-fetch cart for unauthenticated users
 - [x] Decide guest-cart strategy (no guest cart or merge after login)
-- [ ] Update checkout to call `POST /api/orders` with no payload
-- [ ] Replace mock profile order history with `GET /api/orders/my`
-- [ ] Update admin orders page to use `GET /api/orders` and `PUT /api/orders/{id}/status`
-- [ ] Align frontend order types with backend DTOs
+- [x] Update checkout to call `POST /api/orders` with no payload
+- [x] Replace mock profile order history with `GET /api/orders/my`
+- [x] Update admin orders page to use `GET /api/orders` and `PUT /api/orders/{id}/status`
+- [x] Align frontend order types with backend DTOs
 - [ ] Remove unsupported `Cancelled` status from admin UI
 
 ## P1 (Important)

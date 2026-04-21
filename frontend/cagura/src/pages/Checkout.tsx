@@ -15,7 +15,7 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
-      await api.post('/orders', { items });
+      await api.post('/orders');
       clearCart();
       toast.success('Order placed successfully!');
       setStep(3); // Success step

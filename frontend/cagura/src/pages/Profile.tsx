@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Package, User, MapPin } from 'lucide-react';
+import api from '../services/api';
+import type { OrderResponseDto } from '../types';
 import './Profile.css';
-
-interface Order {
-  id: number;
-  date: string;
-  total: number;
-  status: string;
-}
 
 const Profile = () => {
   const { user, logout } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderResponseDto[]>([]);
   const [activeTab, setActiveTab] = useState('orders');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock fetch for personal orders
-    setOrders([
-      { id: 1001, date: '2026-04-18', total: 349.50, status: 'Processing' },
-      { id: 984, date: '2026-03-21', total: 189.99, status: 'Delivered' }
-    ]);
+    const fetchOrders = async () => {
+      try {
+        const data = (await api.get('/orders/my')) as unknown as OrderResponseDto[];
+        setOrders(data);
+      } catch (error) {
+        console.error('Failed to load orders:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, []);
 
   if (!user) return null;
@@ -66,31 +69,38 @@ const Profile = () => {
             <div>
               <h2>Order History</h2>
               <p className="text-secondary mb-4">View your past orders and their status.</p>
-              
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Order #</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map(order => (
-                    <tr key={order.id}>
-                      <td>#{order.id}</td>
-                      <td>{order.date}</td>
-                      <td>${order.total.toFixed(2)}</td>
-                      <td>
-                        <span className={`status-badge ${order.status.toLowerCase()}`}>
-                          {order.status}
-                        </span>
-                      </td>
+              {loading ? (
+                <p className="text-secondary">Loading your orders...</p>
+              ) : orders.length === 0 ? (
+                <p className="text-secondary">You have not placed any orders yet.</p>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Date</th>
+                      <th>Items</th>
+                      <th>Total</th>
+                      <th>Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {orders.map(order => (
+                      <tr key={order.orderId}>
+                        <td>#{order.orderId}</td>
+                        <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                        <td>{order.itemCount}</td>
+                        <td>${order.totalAmount.toFixed(2)}</td>
+                        <td>
+                          <span className={`status-badge ${order.status.toLowerCase()}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
           
