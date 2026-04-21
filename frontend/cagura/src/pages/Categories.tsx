@@ -1,43 +1,71 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Watch, Headphones, Monitor, MousePointer2, Shirt, ShoppingBag, Footprints } from 'lucide-react';
+import { Grid3X3 } from 'lucide-react';
+import type { CategoryResponseDto, ProductResponseDto } from '../types';
+import { categoryService } from '../services/categoryService';
+import api from '../services/api';
 import './Categories.css';
 
 const Categories = () => {
-  const categories = [
-    { name: 'Men\'s Clothing', icon: Shirt, count: 6, description: 'Premium menswear essentials.', color: 'rgba(59, 130, 246, 0.2)' },
-    { name: 'Women\'s Clothing', icon: ShoppingBag, count: 6, description: 'Elegant womenswear pieces.', color: 'rgba(236, 72, 153, 0.2)' },
-    { name: 'Footwear', icon: Footprints, count: 5, description: 'Classic and modern shoes.', color: 'rgba(245, 158, 11, 0.2)' },
-    { name: 'Wearables', icon: Watch, count: 3, description: 'Smartwatches and fitness trackers.', color: 'rgba(225, 29, 72, 0.2)' },
-    { name: 'Audio', icon: Headphones, count: 6, description: 'High-fidelity headphones and speakers.', color: 'rgba(245, 158, 11, 0.2)' },
-    { name: 'Displays', icon: Monitor, count: 3, description: '4K monitors and curved displays.', color: 'rgba(168, 85, 247, 0.2)' },
-    { name: 'Accessories', icon: MousePointer2, count: 18, description: 'Keyboards, mice, bags, and luxury items.', color: 'rgba(16, 185, 129, 0.2)' }
-  ];
+  const [categories, setCategories] = useState<CategoryResponseDto[]>([]);
+  const [products, setProducts] = useState<ProductResponseDto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [categoryData, productData] = await Promise.all([
+          categoryService.getAll(),
+          api.get('/products') as Promise<ProductResponseDto[]>,
+        ]);
+
+        setCategories(categoryData);
+        setProducts(productData);
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const productCounts = useMemo(() => {
+    return products.reduce<Record<number, number>>((acc, product) => {
+      acc[product.categoryId] = (acc[product.categoryId] || 0) + 1;
+      return acc;
+    }, {});
+  }, [products]);
 
   return (
     <div className="page-background categories-bg">
       <div className="categories-page">
-      <div className="page-header text-center mb-5">
-        <h1>Shop by <span className="text-gradient">Category</span></h1>
-        <p className="text-secondary">Explore our curated collections of premium tech.</p>
-      </div>
+        <div className="page-header text-center mb-5">
+          <h1>Shop by <span className="text-gradient">Category</span></h1>
+          <p className="text-secondary">Explore our curated collections driven by the live backend catalog.</p>
+        </div>
 
-      <div className="category-grid">
-        {categories.map(cat => (
-          <Link 
-            to={`/shop?category=${encodeURIComponent(cat.name)}`} 
-            key={cat.name} 
-            className="category-card glass-panel"
-            style={{ background: `linear-gradient(135deg, ${cat.color} 0%, var(--bg-glass) 100%)` }}
-          >
-            <div className="category-icon-wrapper">
-              <cat.icon size={32} className="category-icon" />
-            </div>
-            <h2>{cat.name}</h2>
-            <p className="text-secondary">{cat.description}</p>
-            <span className="item-count">{cat.count} items</span>
-          </Link>
-        ))}
-      </div>
+        {loading ? (
+          <p className="text-secondary">Loading categories...</p>
+        ) : (
+          <div className="category-grid">
+            {categories.map((category) => (
+              <Link
+                to={`/shop?category=${encodeURIComponent(category.name)}`}
+                key={category.id}
+                className="category-card glass-panel"
+              >
+                <div className="category-icon-wrapper">
+                  <Grid3X3 size={32} className="category-icon" />
+                </div>
+                <h2>{category.name}</h2>
+                <p className="text-secondary">{category.description || 'Explore everything currently available in this collection.'}</p>
+                <span className="item-count">{productCounts[category.id] || 0} items</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

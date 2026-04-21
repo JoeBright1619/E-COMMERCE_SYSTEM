@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Home } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Tags, LogOut, Home } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './AdminLayout.css';
 
@@ -17,7 +17,7 @@ const AdminLayout = () => {
     { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/products', icon: Package, label: 'Products' },
     { path: '/admin/orders', icon: ShoppingBag, label: 'Orders' },
-    { path: '/admin/customers', icon: Users, label: 'Customers' },
+    { path: '/admin/categories', icon: Tags, label: 'Categories' },
   ];
 
   return (

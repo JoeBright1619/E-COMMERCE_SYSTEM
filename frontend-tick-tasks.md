@@ -30,15 +30,15 @@ This checklist breaks down the actionable tasks from frontend-implementation-tas
 - [ ] Replace mock rating/review-count logic with backend data
 - [ ] Add review submission/edit/delete UI
 - [ ] Add "My Reviews" tab/page using `GET /api/reviews/my`
-- [ ] Create category service for `GET /api/categories`
-- [ ] Update category listing pages to use backend categories
-- [ ] Add `/admin/categories` route and page
-- [ ] Implement admin category CRUD
-- [ ] Update admin sidebar to include Categories instead of Customers
+- [x] Create category service for `GET /api/categories`
+- [x] Update category listing pages to use backend categories
+- [x] Add `/admin/categories` route and page
+- [x] Implement admin category CRUD
+- [x] Update admin sidebar to include Categories instead of Customers
 - [ ] Replace mock dashboard stats with `GET /api/reports/dashboard`
 - [ ] Align dashboard widgets with backend DTOs
 - [ ] Add date-range reporting UI for `GET /api/reports/orders`
-- [ ] Remove `/admin/customers` and nav if not in scope
+- [x] Remove `/admin/customers` and nav if not in scope
 - [ ] Add frontend auth types aligned with `AuthResponseDto`
 - [ ] Store `expiresAt` with token/user and validate on load
 - [ ] Add Axios 401/403 handling (clear session, redirect to login)
@@ -50,12 +50,12 @@ This checklist breaks down the actionable tasks from frontend-implementation-tas
 
 - [ ] Frontend runs against real backend with mocks disabled
 - [ ] Product pages render using backend DTOs
-- [ ] Category filtering uses real backend data
+- [x] Category filtering uses real backend data
 - [ ] Cart works only for authenticated users
 - [ ] Checkout creates orders via backend cart
 - [ ] Profile shows real order history
 - [ ] Admin orders page uses real endpoints
 - [ ] Admin dashboard uses real report endpoints
 - [ ] Reviews are visible and editable
-- [ ] Admin categories page uses backend CRUD
-- [ ] Unsupported admin pages/routes are removed or backed by real APIs
+- [x] Admin categories page uses backend CRUD
+- [x] Unsupported admin pages/routes are removed or backed by real APIs

@@ -4,7 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
 import api from '../services/api';
-import type { ProductResponseDto as Product } from '../types';
+import { categoryService } from '../services/categoryService';
+import type { CategoryResponseDto, ProductResponseDto as Product } from '../types';
 import { withDerivedProductFields } from '../utils/product';
 import './Shop.css';
 
@@ -30,6 +31,7 @@ const Shop = () => {
   const view = searchParams.get('view') || 'all';
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOption, setSortOption] = useState('default');
 
@@ -37,8 +39,12 @@ const Shop = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = (await api.get('/products')) as unknown as Product[];
-        setProducts(data.map(withDerivedProductFields));
+        const [productData, categoryData] = await Promise.all([
+          api.get('/products') as Promise<Product[]>,
+          categoryService.getAll(),
+        ]);
+        setProducts(productData.map(withDerivedProductFields));
+        setCategories(categoryData);
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
@@ -49,8 +55,8 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const categories = ['All', ...Array.from(new Set(products.map((product) => product.categoryName)))];
-  const activeCategory = categories.find((category) => category.toLowerCase() === categoryParam.toLowerCase()) ?? 'All';
+  const categoryNames = ['All', ...categories.map((category) => category.name)];
+  const activeCategory = categoryNames.find((category) => category.toLowerCase() === categoryParam.toLowerCase()) ?? 'All';
 
   const productsByView = view === 'new'
     ? products.filter((product) => product.isNew)
@@ -132,11 +138,11 @@ const Shop = () => {
           <aside className="shop-sidebar glass-panel">
             <div className="shop-sidebar-header">
               <h3>Categories</h3>
-              <span>{categories.length - 1} edits</span>
+              <span>{categoryNames.length - 1} edits</span>
             </div>
 
             <div className="shop-category-pills">
-              {categories.map((category) => (
+              {categoryNames.map((category) => (
                 <Link
                   key={category}
                   to={category === 'All' ? '/shop' : `/shop?category=${encodeURIComponent(category)}`}

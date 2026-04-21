@@ -24,7 +24,7 @@ import Profile from './pages/Profile';
 import Dashboard from './pages/admin/Dashboard';
 import ManageProducts from './pages/admin/ManageProducts';
 import ManageOrders from './pages/admin/ManageOrders';
-import ManageCustomers from './pages/admin/ManageCustomers';
+import ManageCategories from './pages/admin/ManageCategories';
 
 // A layout for the public storefront that includes Navbar and Footer
 const StorefrontLayout = () => {
@@ -73,7 +73,7 @@ function App() {
                   <Route index element={<Dashboard />} />
                   <Route path="products" element={<ManageProducts />} />
                   <Route path="orders" element={<ManageOrders />} />
-                  <Route path="customers" element={<ManageCustomers />} />
+                  <Route path="categories" element={<ManageCategories />} />
                 </Route>
               </Route>
             </Routes>
