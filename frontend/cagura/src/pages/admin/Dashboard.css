@@ -68,6 +68,97 @@
   font-weight: 600;
 }
 
+.dashboard-content {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.dashboard-section-header {
+  margin-bottom: 1rem;
+}
+
+.dashboard-section-header h3,
+.dashboard-section-header h4 {
+  margin-bottom: 0.35rem;
+}
+
+.report-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.5rem;
+}
+
+.report-filter-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 160px;
+  color: var(--text-secondary);
+}
+
+.report-filter-form input {
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-metric {
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.summary-metric span {
+  color: var(--text-secondary);
+}
+
+.summary-metric strong {
+  font-size: 1.35rem;
+}
+
+.dashboard-two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-list li:last-child {
+  border-bottom: none;
+}
+
+.daily-summary h4 {
+  margin-bottom: 1rem;
+}
+
 /* Common Admin Table Styles */
 .admin-table {
   width: 100%;
@@ -123,4 +214,9 @@
 .status-badge.delivered {
   background: rgba(34, 197, 94, 0.1);
   color: #22c55e;
+}
+
+.status-badge.cancelled {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
 }

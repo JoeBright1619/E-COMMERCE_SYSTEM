@@ -35,9 +35,9 @@ This checklist breaks down the actionable tasks from frontend-implementation-tas
 - [x] Add `/admin/categories` route and page
 - [x] Implement admin category CRUD
 - [x] Update admin sidebar to include Categories instead of Customers
-- [ ] Replace mock dashboard stats with `GET /api/reports/dashboard`
-- [ ] Align dashboard widgets with backend DTOs
-- [ ] Add date-range reporting UI for `GET /api/reports/orders`
+- [x] Replace mock dashboard stats with `GET /api/reports/dashboard`
+- [x] Align dashboard widgets with backend DTOs
+- [x] Add date-range reporting UI for `GET /api/reports/orders`
 - [x] Remove `/admin/customers` and nav if not in scope
 - [ ] Add frontend auth types aligned with `AuthResponseDto`
 - [ ] Store `expiresAt` with token/user and validate on load
@@ -55,7 +55,7 @@ This checklist breaks down the actionable tasks from frontend-implementation-tas
 - [ ] Checkout creates orders via backend cart
 - [ ] Profile shows real order history
 - [ ] Admin orders page uses real endpoints
-- [ ] Admin dashboard uses real report endpoints
+- [x] Admin dashboard uses real report endpoints
 - [ ] Reviews are visible and editable
 - [x] Admin categories page uses backend CRUD
 - [x] Unsupported admin pages/routes are removed or backed by real APIs
