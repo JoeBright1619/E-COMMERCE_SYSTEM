@@ -3,15 +3,7 @@ import type { ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../services/api';
 
-export interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  isNew: boolean;
-}
+import type { ProductResponseDto as Product } from '../types';
 
 export interface CartItem {
   productId: number;
