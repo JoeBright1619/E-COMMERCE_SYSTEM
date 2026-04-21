@@ -74,6 +74,25 @@ const Login = () => {
           <button type="submit" className="btn btn-primary auth-submit-btn" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
+
+          <div className="demo-credentials" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
+              onClick={() => { setEmail('admin@cagura.com'); setPassword('Admin@123'); }}
+            >
+              Demo: Admin
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
+              onClick={() => { setEmail('user@cagura.com'); setPassword('User@123'); }}
+            >
+              Demo: User
+            </button>
+          </div>
         </form>
         
         <div className="auth-footer">
