@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Package, User, MapPin, Star, Edit2, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import api from '../services/api';
+import { orderService } from '../services/orderService';
 import { reviewService } from '../services/reviewService';
 import type { OrderResponseDto, ReviewResponseDto } from '../types';
 import ReviewModal from '../components/ReviewModal';
@@ -20,7 +20,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = (await api.get('/orders/my')) as unknown as OrderResponseDto[];
+        const data = await orderService.getMyOrders();
         setOrders(data);
       } catch (error) {
         console.error('Failed to load orders:', error);

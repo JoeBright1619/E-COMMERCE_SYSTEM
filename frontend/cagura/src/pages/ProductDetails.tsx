@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
 import ReviewModal from '../components/ReviewModal';
-import api from '../services/api';
+import { productService } from '../services/productService';
 import { reviewService } from '../services/reviewService';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -96,8 +96,8 @@ const ProductDetails = () => {
       try {
         setLoading(true);
         const [productData, productsData, reviewsData] = await Promise.all([
-          api.get(`/products/${id}`) as unknown as Promise<Product>,
-          api.get('/products') as unknown as Promise<Product[]>,
+          productService.getById(Number(id)),
+          productService.getAll(),
           reviewService.getProductReviews(Number(id)),
         ]);
 

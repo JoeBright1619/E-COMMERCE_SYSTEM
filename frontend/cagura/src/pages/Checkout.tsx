@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useCart } from '../contexts/CartContext';
-import api from '../services/api';
+import { orderService } from '../services/orderService';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -15,7 +15,7 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
-      await api.post('/orders');
+      await orderService.create();
       clearCart();
       toast.success('Order placed successfully!');
       setStep(3); // Success step

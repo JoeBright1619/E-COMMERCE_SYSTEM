@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import api from '../../services/api';
-import type { OrderResponseDto, UpdateStatusDto } from '../../types';
+import { orderService } from '../../services/orderService';
+import type { OrderResponseDto } from '../../types';
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState<OrderResponseDto[]>([]);
@@ -13,7 +13,7 @@ const ManageOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const data = (await api.get('/orders')) as unknown as OrderResponseDto[];
+      const data = await orderService.getAll();
       setOrders(data);
     } catch (error) {
       toast.error('Failed to load orders');
@@ -25,7 +25,7 @@ const ManageOrders = () => {
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
       const payload: UpdateStatusDto = { status: newStatus };
-      await api.put(`/orders/${id}/status`, payload);
+      await orderService.updateStatus(id, payload);
       setOrders(orders.map(o => o.orderId === id ? { ...o, status: newStatus } : o));
       toast.success(`Order #${id} marked as ${newStatus}`);
     } catch (error) {

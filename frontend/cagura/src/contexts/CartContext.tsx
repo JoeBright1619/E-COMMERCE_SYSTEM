@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
-import api from '../services/api';
+import { cartService } from '../services/cartService';
 import { useAuth } from './AuthContext';
 import type { CartAddDto, CartItemResponseDto, CartResponseDto, CartUpdateDto } from '../types';
 
@@ -42,7 +42,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setIsLoading(true);
-      const data = (await api.get('/cart')) as unknown as CartResponseDto;
+      const data = await cartService.getCart();
       applyCartState(data);
     } catch (error) {
       console.error('Failed to fetch cart:', error);
@@ -64,7 +64,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const payload: CartAddDto = { productId, quantity };
-      await api.post('/cart', payload);
+      await cartService.addItem(payload);
       await fetchCart();
       toast.success('Item added to cart');
     } catch (error) {
@@ -81,7 +81,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const payload: CartUpdateDto = { quantity };
-      await api.put(`/cart/${cartItemId}`, payload);
+      await cartService.updateItem(cartItemId, payload);
       await fetchCart();
     } catch (error) {
       console.error('Failed to update cart item:', error);
@@ -96,7 +96,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      await api.delete(`/cart/${cartItemId}`);
+      await cartService.removeItem(cartItemId);
       await fetchCart();
       toast.success('Item removed from cart');
     } catch (error) {

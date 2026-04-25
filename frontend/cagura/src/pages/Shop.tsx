@@ -3,7 +3,7 @@ import { SlidersHorizontal, Sparkles, Tag, TrendingUp } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
-import api from '../services/api';
+import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import type { CategoryResponseDto, ProductResponseDto as Product } from '../types';
 import { withDerivedProductFields } from '../utils/product';
@@ -40,7 +40,7 @@ const Shop = () => {
       try {
         setLoading(true);
         const [productData, categoryData] = await Promise.all([
-          api.get('/products') as Promise<Product[]>,
+          productService.getAll(),
           categoryService.getAll(),
         ]);
         setProducts(productData.map(withDerivedProductFields));

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import api from '../../services/api';
+import { productService } from '../../services/productService';
 import type { ProductResponseDto as Product } from '../../types';
 import { withDerivedProductFields } from '../../utils/product';
 import './ManageProducts.css';
@@ -18,7 +19,7 @@ const ManageProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const data = (await api.get('/products')) as unknown as Product[];
+      const data = await productService.getAll();
       setProducts(data.map(withDerivedProductFields));
     } catch (error) {
       console.error('Error fetching products:', error);

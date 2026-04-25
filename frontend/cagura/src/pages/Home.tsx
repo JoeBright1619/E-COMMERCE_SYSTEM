@@ -3,7 +3,7 @@ import { ArrowRight, Leaf, PackageCheck, ShieldCheck, Truck } from 'lucide-react
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
-import api from '../services/api';
+import { productService } from '../services/productService';
 import type { ProductResponseDto as Product } from '../types';
 import { withDerivedProductFields } from '../utils/product';
 import './Home.css';
@@ -117,7 +117,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = (await api.get('/products')) as unknown as Product[];
+        const data = await productService.getAll();
         setProducts(data.map(withDerivedProductFields));
       } catch (error) {
         console.error('Error fetching products:', error);
