@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // The base URL for the backend ASP.NET API
-const API_URL = 'https://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -45,6 +45,17 @@ api.interceptors.response.use(
         window.location.href = '/login';
       }
     }
+
+    // Handle ASP.NET Core Validation errors explicitly (format 400 Bad Request)
+    if (error.response?.status === 400 && error.response?.data?.errors) {
+      const validationErrors = error.response.data.errors;
+      const firstErrorMessage = Object.values(validationErrors)
+        .flat()
+        .join(', ');
+      
+      return Promise.reject(new Error(firstErrorMessage || 'Validation failed.'));
+    }
+
     const message = error.response?.data?.message || error.message || 'An unexpected error occurred';
     return Promise.reject(new Error(message));
   }
