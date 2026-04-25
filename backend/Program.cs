@@ -138,7 +138,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        await DataSeeder.SeedAdminUserAsync(context);
+        await DataSeeder.SeedAllAsync(context);
     }
     catch (Exception ex)
     {
