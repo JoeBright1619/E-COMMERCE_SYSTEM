@@ -173,8 +173,7 @@ const Home = () => {
             <p className="hero-kicker">The Daily Edit</p>
             <h1 className="hero-title">A calmer storefront for the <span className="text-highlight">things you use</span> every day.</h1>
             <p className="hero-subtitle">
-              Inspired by the clean rhythm of Allbirds, this refresh gives your shop a softer premium feel:
-              fewer distractions, stronger product stories, and faster paths into what is new, useful, and ready to ship.
+              Fewer distractions, stronger product stories, and faster paths to what is new, useful, and ready to ship — the way everyday shopping should feel.
             </p>
 
             <div className="hero-actions">
@@ -233,19 +232,19 @@ const Home = () => {
       </section>
 
       <section className="home-story-strip reveal">
-        <div className="story-pill">Soft premium palette</div>
-        <div className="story-pill">Editorial category entry points</div>
-        <div className="story-pill">Search-first navigation</div>
-        <div className="story-pill">Mobile-friendly browsing</div>
+        <div className="story-pill">Free Shipping on $100+</div>
+        <div className="story-pill">Easy 30-Day Returns</div>
+        <div className="story-pill">Secure Checkout</div>
+        <div className="story-pill">Curated Everyday Essentials</div>
       </section>
 
       <section className="home-collection-section reveal watermark-container">
         <div className="watermark-bg" style={{ top: '30%', fontSize: '14vw' }}>ESSENTIALS</div>
         <div className="home-section-header">
           <p className="home-section-eyebrow">Shop By Focus</p>
-          <h2>Guided entry points instead of one <span className="text-highlight">crowded wall</span> of products.</h2>
+          <h2>Find exactly what you need, starting from <span className="text-highlight">what matters most</span>.</h2>
           <p className="home-section-subtitle">
-            These collection cards borrow the Allbirds idea of easing people into shopping through clear, thematic choices.
+            Each category is curated to keep browsing focused and decisions easy.
           </p>
         </div>
 
@@ -282,16 +281,16 @@ const Home = () => {
 
       <section className="editorial-section reveal">
         <div className="editorial-card editorial-story">
-          <p className="home-section-eyebrow">Why This Direction Works</p>
-          <h2>It feels premium because it gives the products <span className="text-highlight">room to breathe</span>.</h2>
+          <p className="home-section-eyebrow">Our Philosophy</p>
+          <h2>Products selected for how you <span className="text-highlight">actually live</span>.</h2>
           <p>
-            Allbirds is effective because it mixes calm whitespace, large product imagery, and short reassuring messages.
-            This version adapts that approach to your ecommerce project without copying the site outright.
+            CAGURA was built around a simple idea: the best everyday essentials are the ones that earn their place
+            without asking for attention. We curate products that work — comfortable, durable, and built for real routines.
           </p>
           <ul className="editorial-list">
-            <li>Cleaner navigation with direct pathways for deals, new arrivals, and delivery information.</li>
-            <li>Large editorial cards that spotlight categories before customers hit the full catalog.</li>
-            <li>Supportive trust cues that make the experience feel lighter and easier to buy from.</li>
+            <li>Every product is handpicked for comfort, durability, and real-world use.</li>
+            <li>We keep the catalog focused so browsing stays fast and decisions stay clear.</li>
+            <li>Free returns mean you can shop without second-guessing.</li>
           </ul>
           <Link to="/about" className="btn btn-secondary">Read Our Story</Link>
         </div>
@@ -323,9 +322,9 @@ const Home = () => {
         <div className="watermark-bg">DISCOVER</div>
         <div className="home-section-header">
           <p className="home-section-eyebrow">Featured Products</p>
-          <h2>Bestsellers presented with a little <span className="text-highlight">more polish</span>.</h2>
+          <h2>Our most-loved products, <span className="text-highlight">ready to ship</span>.</h2>
           <p className="home-section-subtitle">
-            Product cards stay functional, but the surrounding layout now feels more curated and brand-led.
+            Handpicked items our customers keep coming back to — tried, tested, and consistently top-rated.
           </p>
         </div>
 
@@ -374,9 +373,9 @@ const Home = () => {
       <section className="newsletter-section reveal">
         <div className="newsletter-card">
           <p className="newsletter-eyebrow">Stay In The Loop</p>
-          <h2>Join the CAGURA community for <span className="text-highlight">launch drops</span>, offers, and curated picks.</h2>
+          <h2>Be the first to know about <span className="text-highlight">new arrivals</span> and exclusive deals.</h2>
           <p>
-            The new homepage encourages slower, more intentional browsing. Email is still the fastest way to bring people back.
+            Join the CAGURA community and get early access to launches, curated edits, and members-only offers delivered straight to your inbox.
           </p>
           <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
             <input type="email" placeholder="Enter your email address" className="newsletter-input" required />
