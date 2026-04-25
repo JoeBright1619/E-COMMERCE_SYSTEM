@@ -310,8 +310,18 @@ const ProductDetails = () => {
       <section className="detail-reviews-wrapper">
         <div className="detail-reviews-header">
           <h2>Customer Reviews</h2>
-          {isAuthenticated && !userHasReviewed && (
-            <button className="btn btn-secondary" onClick={() => setIsReviewModalOpen(true)}>
+          {!userHasReviewed && (
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => {
+                if (isAuthenticated) {
+                  setIsReviewModalOpen(true);
+                } else {
+                  toast('Please log in to write a review.', { icon: '🔒' });
+                  navigate('/login');
+                }
+              }}
+            >
               Write a Review
             </button>
           )}
