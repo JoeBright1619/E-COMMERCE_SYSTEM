@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import api from '../../services/api';
+import { toast } from 'react-hot-toast';
 import { productService } from '../../services/productService';
-import type { ProductResponseDto as Product } from '../../types';
+import { categoryService } from '../../services/categoryService';
+import type { ProductResponseDto as Product, CategoryResponseDto } from '../../types';
 import { withDerivedProductFields } from '../../utils/product';
 import './ManageProducts.css';
 import ProductModal, { type ProductFormData } from '../../components/ProductModal';
@@ -12,12 +13,15 @@ const PAGE_SIZE = 10;
 
 const ManageProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
   const fetchProducts = async () => {
@@ -32,22 +36,82 @@ const ManageProducts = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const data = await categoryService.getAll();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      // In a real scenario we'd call api.delete(`/products/${id}`)
-      setProducts(products.filter(p => p.id !== id));
+      try {
+        await productService.remove(id);
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        toast.success('Product deleted');
+      } catch {
+        toast.error('Failed to delete product');
+      }
     }
   };
 
   const handleAddProduct = () => {
-  setIsModalOpen(true);
-};
+    setEditingProduct(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingProduct(null);
+  };
 
   const handleProductSubmit = async (formData: ProductFormData) => {
-    await api.post('/products', formData);
-    setIsModalOpen(false);
-    fetchProducts();
+    try {
+      if (editingProduct) {
+        await productService.update(editingProduct.id, {
+          name: formData.name,
+          description: formData.description,
+          price: formData.price,
+          imageUrl: formData.imageUrl,
+          stockQuantity: formData.stockQuantity,
+          categoryId: formData.categoryId,
+          isActive: formData.isActive,
+        });
+        toast.success('Product updated');
+      } else {
+        await productService.create({
+          name: formData.name,
+          description: formData.description,
+          price: formData.price,
+          imageUrl: formData.imageUrl,
+          stockQuantity: formData.stockQuantity,
+          categoryId: formData.categoryId,
+        });
+        toast.success('Product created');
+      }
+      handleCloseModal();
+      fetchProducts();
+    } catch {
+      toast.error(editingProduct ? 'Failed to update product' : 'Failed to create product');
+    }
   };
+
+  const productToFormData = (product: Product): ProductFormData => ({
+    name: product.name,
+    description: product.description || '',
+    price: product.price,
+    imageUrl: product.imageUrl || '',
+    stockQuantity: product.stockQuantity,
+    categoryId: product.categoryId,
+    isActive: product.isActive,
+  });
 
   return (
     <div className="manage-products">
@@ -80,7 +144,7 @@ const ManageProducts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map(product => (
+                  {products.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map((product) => (
                     <tr key={product.id}>
                       <td>
                         <img src={product.imageUrl || undefined} alt={product.name} className="table-img" />
@@ -92,7 +156,11 @@ const ManageProducts = () => {
                       <td>{product.isActive ? 'Active' : 'Inactive'}</td>
                       <td>
                         <div className="action-buttons">
-                          <button className="icon-btn edit-btn" title="Edit">
+                          <button
+                            className="icon-btn edit-btn"
+                            title="Edit"
+                            onClick={() => handleEditProduct(product)}
+                          >
                             <Edit2 size={18} />
                           </button>
                           <button
@@ -120,9 +188,12 @@ const ManageProducts = () => {
       </div>
 
       <ProductModal
+        key={editingProduct?.id ?? 'new'}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         onSubmit={handleProductSubmit}
+        initialData={editingProduct ? productToFormData(editingProduct) : undefined}
+        categories={categories}
       />
     </div>
   );
