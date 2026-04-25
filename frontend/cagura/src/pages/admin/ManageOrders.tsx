@@ -81,7 +81,7 @@ const ManageOrders = () => {
                     <select
                       value={order.status}
                       onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                      style={{ padding: '0.5rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}
+                      style={{ padding: '0.5rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid rgba(0,0,0,0.15)', cursor: 'pointer' }}
                     >
                       <option value="Pending">Pending</option>
                       <option value="Processing">Processing</option>
