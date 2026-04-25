@@ -17,6 +17,8 @@ namespace backend.Repositories
         {
             return await _context.Orders
                 .Where(o => o.UserId == userId)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
         }
@@ -25,6 +27,8 @@ namespace backend.Repositories
         {
             return await _context.Orders
                 .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
