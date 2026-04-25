@@ -10,6 +10,14 @@ interface ReviewModalProps {
   initialData?: { rating: number; comment: string | null };
 }
 
+const RATING_LABELS: Record<number, string> = {
+  1: 'Poor',
+  2: 'Fair',
+  3: 'Good',
+  4: 'Very Good',
+  5: 'Excellent',
+};
+
 const ReviewModal = ({ isOpen, onClose, onSubmit, productName, initialData }: ReviewModalProps) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -31,6 +39,8 @@ const ReviewModal = ({ isOpen, onClose, onSubmit, productName, initialData }: Re
   }, [isOpen, initialData]);
 
   if (!isOpen) return null;
+
+  const activeRating = hoverRating || rating;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,36 +65,44 @@ const ReviewModal = ({ isOpen, onClose, onSubmit, productName, initialData }: Re
     <div className="review-modal-overlay" onClick={onClose}>
       <div className="review-modal glass-panel" onClick={(e) => e.stopPropagation()}>
         <div className="review-modal-header">
-          <h3>Review {initialData ? 'Edit' : 'Submission'}</h3>
+          <h3>{initialData ? 'Edit Review' : 'Write a Review'}</h3>
           <button className="icon-btn" onClick={onClose} aria-label="Close">
             <X size={20} />
           </button>
         </div>
-        
+
         <p className="text-secondary mb-4">How was your experience with <strong>{productName}</strong>?</p>
-        
+
         {error && <div className="review-modal-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="review-modal-form">
           <div className="review-rating-selector">
             <label>Rating</label>
-            <div className="stars-interactive" onMouseLeave={() => setHoverRating(0)}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  type="button"
-                  key={star}
-                  className="star-btn"
-                  onClick={() => setRating(star)}
-                  onMouseEnter={() => setHoverRating(star)}
-                  aria-label={`Rate ${star} stars`}
-                >
-                  <Star 
-                    size={28} 
-                    fill={(hoverRating || rating) >= star ? '#f4b740' : 'transparent'} 
-                    color={(hoverRating || rating) >= star ? '#f4b740' : '#d8ccbf'} 
-                  />
-                </button>
-              ))}
+            <div className="stars-interactive-row">
+              <div
+                className="stars-interactive"
+                onMouseLeave={() => setHoverRating(0)}
+              >
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    type="button"
+                    key={star}
+                    className={`star-btn${activeRating >= star ? ' active' : ''}`}
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    aria-label={`Rate ${star} stars`}
+                  >
+                    <Star
+                      size={32}
+                      fill={activeRating >= star ? '#f4b740' : 'transparent'}
+                      color={activeRating >= star ? '#f4b740' : '#d8ccbf'}
+                    />
+                  </button>
+                ))}
+              </div>
+              <span className="star-rating-label">
+                {activeRating > 0 ? RATING_LABELS[activeRating] : 'Select a rating'}
+              </span>
             </div>
           </div>
 

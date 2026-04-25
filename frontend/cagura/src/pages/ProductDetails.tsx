@@ -321,8 +321,8 @@ const ProductDetails = () => {
         <div className="detail-reviews-header">
           <h2>Customer Reviews</h2>
           {!userHasReviewed && (
-            <button 
-              className="btn btn-secondary" 
+            <button
+              className="btn btn-write-review"
               onClick={() => {
                 if (isAuthenticated) {
                   setIsReviewModalOpen(true);
@@ -332,7 +332,7 @@ const ProductDetails = () => {
                 }
               }}
             >
-              Write a Review
+              <Star size={15} fill="currentColor" /> Write a Review
             </button>
           )}
         </div>
