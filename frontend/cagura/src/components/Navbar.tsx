@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShoppingCart, Search, User, Menu, LogOut, X } from 'lucide-react';
+import { ShoppingCart, Search, User, Menu, LogOut, X, Shield } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,17 +17,11 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { itemCount } = useCart();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleAuthAction = () => {
-    if (isAuthenticated) {
-      logout();
-    } else {
-      navigate('/login');
-    }
-  };
+
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,10 +78,24 @@ const Navbar = () => {
               />
             </form>
 
-            <button className="action-link" aria-label="Account" title="Account" onClick={handleAuthAction}>
-              {isAuthenticated ? <LogOut size={18} /> : <User size={18} />}
-              <span className="action-label">{isAuthenticated ? 'Logout' : 'Account'}</span>
-            </button>
+            {isAuthenticated && user?.role === 'Admin' && (
+              <Link to="/admin" className="action-link" aria-label="Admin Panel" title="Admin Panel">
+                <Shield size={18} />
+                <span className="action-label">Admin</span>
+              </Link>
+            )}
+
+            {isAuthenticated ? (
+              <Link to="/profile" className="action-link" aria-label="Profile" title="Profile">
+                <User size={18} />
+                <span className="action-label">Profile</span>
+              </Link>
+            ) : (
+              <Link to="/login" className="action-link" aria-label="Account" title="Account">
+                <User size={18} />
+                <span className="action-label">Account</span>
+              </Link>
+            )}
 
             <Link to="/cart" className="action-link cart-link" aria-label="Cart" title="Cart">
               <ShoppingCart size={18} />
@@ -146,12 +154,20 @@ const Navbar = () => {
         </div>
 
         <div className="mobile-drawer-footer">
-          <button className="mobile-auth-btn" onClick={() => {
-            setIsMobileMenuOpen(false);
-            handleAuthAction();
-          }}>
-            {isAuthenticated ? 'Logout' : 'Login / Register'}
-          </button>
+          {isAuthenticated && user?.role === 'Admin' && (
+            <Link to="/admin" className="mobile-auth-btn" style={{ marginBottom: '10px', background: 'var(--primary)', color: 'white' }} onClick={() => setIsMobileMenuOpen(false)}>
+              Admin Panel
+            </Link>
+          )}
+          {isAuthenticated ? (
+            <Link to="/profile" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
+              My Profile & Orders
+            </Link>
+          ) : (
+            <Link to="/login" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
+              Login / Register
+            </Link>
+          )}
         </div>
       </div>
     </nav>
