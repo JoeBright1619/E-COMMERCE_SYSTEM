@@ -13,6 +13,12 @@ const Login = () => {
   const { login, isAuthenticated, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
+  const demoAdminEmail = import.meta.env.VITE_DEMO_ADMIN_EMAIL as string | undefined;
+  const demoAdminPassword = import.meta.env.VITE_DEMO_ADMIN_PASSWORD as string | undefined;
+  const demoUserEmail = import.meta.env.VITE_DEMO_USER_EMAIL as string | undefined;
+  const demoUserPassword = import.meta.env.VITE_DEMO_USER_PASSWORD as string | undefined;
+  const showDemoButtons = !!(demoAdminEmail && demoUserEmail);
+
   if (authLoading) return null;
   if (isAuthenticated) {
     return <Navigate to={user?.role === 'Admin' ? '/admin' : '/'} replace />;
@@ -85,24 +91,26 @@ const Login = () => {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
 
-          <div className="demo-credentials" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
-              style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
-              onClick={() => { setEmail('admin@cagura.com'); setPassword('Admin@123'); }}
-            >
-              Demo: Admin
-            </button>
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
-              style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
-              onClick={() => { setEmail('user@cagura.com'); setPassword('User@123'); }}
-            >
-              Demo: User
-            </button>
-          </div>
+          {showDemoButtons && (
+            <div className="demo-credentials" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
+                onClick={() => { setEmail(demoAdminEmail!); setPassword(demoAdminPassword!); }}
+              >
+                Demo: Admin
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
+                onClick={() => { setEmail(demoUserEmail!); setPassword(demoUserPassword!); }}
+              >
+                Demo: User
+              </button>
+            </div>
+          )}
         </form>
         
         <div className="auth-footer">
