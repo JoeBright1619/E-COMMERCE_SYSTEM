@@ -5,6 +5,7 @@ import type { UserDto as User, AuthResponseDto } from '../types';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
   login: (authData: AuthResponseDto) => void;
   logout: () => void;
 }
@@ -13,6 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const logout = () => {
     localStorage.removeItem('cagura_token');
@@ -30,10 +32,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (new Date(storedExpiresAt) > new Date()) {
         setUser(JSON.parse(storedUser));
       } else {
-        // Token expired
         logout();
       }
     }
+
+    setLoading(false);
   }, []);
 
   const login = (authData: AuthResponseDto) => {
@@ -44,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
