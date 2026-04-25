@@ -8,25 +8,21 @@ export type ProductFormData = {
   price: number;
   imageUrl?: string;
   stockQuantity: number;
-  category: string;
+  categoryId: number;
   isActive: boolean;
 };
+
+type CategoryOption = { id: number; name: string };
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: ProductFormData) => void;
   initialData?: ProductFormData;
+  categories: CategoryOption[];
 };
 
-const categories = ["Electronics", "Clothing", "Food", "Books"];
-
-const ProductModal: React.FC<Props> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  initialData,
-}) => {
+const ProductModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
   const [form, setForm] = useState<ProductFormData>(
     initialData ?? {
       name: "",
@@ -34,7 +30,7 @@ const ProductModal: React.FC<Props> = ({
       price: 0,
       imageUrl: "",
       stockQuantity: 0,
-      category: "",
+      categoryId: 0,
       isActive: true,
     }
   );
@@ -43,16 +39,14 @@ const ProductModal: React.FC<Props> = ({
 
   if (!isOpen) return null;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    setForm((prev: ProductFormData) => ({
+    setForm((prev) => ({
       ...prev,
       [name]:
         type === "checkbox"
           ? (e.target as HTMLInputElement).checked
-          : type === "number"
+          : name === "categoryId" || type === "number"
           ? Number(value)
           : value,
     }));
@@ -80,9 +74,8 @@ const ProductModal: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
-    if (!form.name || !form.price) return;
+    if (!form.name || !form.price || !form.categoryId) return;
     onSubmit(form);
-    onClose();
   };
 
   return (
@@ -143,10 +136,10 @@ const ProductModal: React.FC<Props> = ({
 
           <label className="modal-field">
             <span>Category</span>
-            <select name="category" value={form.category} onChange={handleChange}>
-              <option value="">Select a category</option>
+            <select name="categoryId" value={form.categoryId} onChange={handleChange}>
+              <option value={0}>Select a category</option>
               {categories.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </label>
@@ -195,7 +188,7 @@ const ProductModal: React.FC<Props> = ({
             onClick={handleSubmit}
             disabled={uploading}
           >
-            Save Product
+            {initialData ? "Update Product" : "Save Product"}
           </button>
         </div>
       </div>

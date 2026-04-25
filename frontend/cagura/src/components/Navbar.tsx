@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShoppingCart, Search, User, Menu, X, Shield } from 'lucide-react';
+import { ShoppingCart, Search, User, Menu, X, Shield, Package } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -85,6 +85,13 @@ const Navbar = () => {
               </Link>
             )}
 
+            {isAuthenticated && (
+              <Link to="/orders" className="action-link" aria-label="My Orders" title="My Orders">
+                <Package size={18} />
+                <span className="action-label">Orders</span>
+              </Link>
+            )}
+
             {isAuthenticated ? (
               <Link to="/profile" className="action-link" aria-label="Profile" title="Profile">
                 <User size={18} />
@@ -139,7 +146,12 @@ const Navbar = () => {
             />
           </form>
 
-          <Link to="/" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+          {isAuthenticated && (
+            <>
+              <Link to="/profile" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>Profile</Link>
+              <Link to="/orders" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>Orders</Link>
+            </>
+          )}
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.label}
@@ -155,15 +167,11 @@ const Navbar = () => {
 
         <div className="mobile-drawer-footer">
           {isAuthenticated && user?.role === 'Admin' && (
-            <Link to="/admin" className="mobile-auth-btn" style={{ marginBottom: '10px', background: 'var(--primary)', color: 'white' }} onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/admin" className="mobile-auth-btn" style={{ background: 'var(--accent-primary)', color: 'white' }} onClick={() => setIsMobileMenuOpen(false)}>
               Admin Panel
             </Link>
           )}
-          {isAuthenticated ? (
-            <Link to="/profile" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
-              My Profile & Orders
-            </Link>
-          ) : (
+          {!isAuthenticated && (
             <Link to="/login" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
               Login / Register
             </Link>

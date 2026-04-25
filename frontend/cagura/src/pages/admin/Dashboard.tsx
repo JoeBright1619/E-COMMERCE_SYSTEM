@@ -90,6 +90,7 @@ const Dashboard = () => {
                 <p className="text-secondary">Latest platform orders from the live orders endpoint.</p>
               </div>
 
+              <div style={{ overflowX: 'auto' }}>
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -116,6 +117,7 @@ const Dashboard = () => {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
 
             <div className="recent-orders glass-panel">
@@ -183,24 +185,26 @@ const Dashboard = () => {
 
                   <div className="daily-summary">
                     <h4>Daily Summary</h4>
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th>Orders</th>
-                          <th>Revenue</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {summary.dailySummary.map((day) => (
-                          <tr key={day.date}>
-                            <td>{new Date(day.date).toLocaleDateString()}</td>
-                            <td>{day.orderCount}</td>
-                            <td>${day.revenue.toFixed(2)}</td>
+                    <div style={{ overflowX: 'auto' }}>
+                      <table className="admin-table">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Orders</th>
+                            <th>Revenue</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {summary.dailySummary.map((day) => (
+                            <tr key={day.date}>
+                              <td>{new Date(day.date).toLocaleDateString()}</td>
+                              <td>{day.orderCount}</td>
+                              <td>${day.revenue.toFixed(2)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </>
               )}

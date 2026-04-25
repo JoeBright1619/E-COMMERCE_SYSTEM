@@ -2,8 +2,8 @@ import api from './api';
 import type { OrderResponseDto, UpdateStatusDto } from '../types';
 
 export const orderService = {
-  async create(): Promise<void> {
-    await api.post('/orders');
+  async create(dto: { shippingAddress: string; paymentMethod?: string }): Promise<void> {
+    await api.post('/orders', dto);
   },
 
   async getMyOrders(): Promise<OrderResponseDto[]> {
@@ -16,5 +16,9 @@ export const orderService = {
 
   async updateStatus(id: number, payload: UpdateStatusDto): Promise<void> {
     await api.put(`/orders/${id}/status`, payload);
+  },
+
+  async cancel(id: number): Promise<void> {
+    await api.post(`/orders/${id}/cancel`);
   },
 };

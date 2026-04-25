@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { categoryService } from '../../services/categoryService';
@@ -15,6 +15,7 @@ const ManageCategories = () => {
   const [editingCategory, setEditingCategory] = useState<CategoryResponseDto | null>(null);
   const [formState, setFormState] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const loadCategories = async () => {
     try {
@@ -79,6 +80,7 @@ const ManageCategories = () => {
       name: category.name,
       description: category.description || '',
     });
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleDelete = async (id: number) => {
@@ -104,7 +106,11 @@ const ManageCategories = () => {
         </div>
       </div>
 
-      <div className="glass-panel p-md" style={{ marginBottom: '1.5rem' }}>
+      <div
+        ref={formRef}
+        className="glass-panel p-md"
+        style={{ marginBottom: '1.5rem', outline: editingCategory ? '2px solid var(--accent-primary)' : 'none', borderRadius: '16px' }}
+      >
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="flex-between" style={{ gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
             <h2 style={{ margin: 0 }}>{editingCategory ? 'Edit Category' : 'Add Category'}</h2>
@@ -148,33 +154,35 @@ const ManageCategories = () => {
         {loading ? (
           <div>Loading categories...</div>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((category) => (
-                <tr key={category.id}>
-                  <td>{category.name}</td>
-                  <td>{category.description || 'No description provided'}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="icon-btn edit-btn" title="Edit" onClick={() => handleEdit(category)}>
-                        <Pencil size={18} />
-                      </button>
-                      <button className="icon-btn delete-btn" title="Delete" onClick={() => handleDelete(category.id)}>
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {categories.map((category) => (
+                  <tr key={category.id}>
+                    <td>{category.name}</td>
+                    <td>{category.description || 'No description provided'}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="icon-btn edit-btn" title="Edit" onClick={() => handleEdit(category)}>
+                          <Pencil size={18} />
+                        </button>
+                        <button className="icon-btn delete-btn" title="Delete" onClick={() => handleDelete(category.id)}>
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

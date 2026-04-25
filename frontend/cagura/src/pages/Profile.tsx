@@ -119,32 +119,34 @@ const Profile = () => {
               ) : orders.length === 0 ? (
                 <p className="text-secondary">You have not placed any orders yet.</p>
               ) : (
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Order #</th>
-                      <th>Date</th>
-                      <th>Items</th>
-                      <th>Total</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map(order => (
-                      <tr key={order.orderId}>
-                        <td>#{order.orderId}</td>
-                        <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                        <td>{order.itemCount}</td>
-                        <td>${order.totalAmount.toFixed(2)}</td>
-                        <td>
-                          <span className={`status-badge ${order.status.toLowerCase()}`}>
-                            {order.status}
-                          </span>
-                        </td>
+                <div style={{ overflowX: 'auto' }}>
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {orders.map(order => (
+                        <tr key={order.orderId}>
+                          <td>#{order.orderId}</td>
+                          <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                          <td>{order.itemCount}</td>
+                          <td>${order.totalAmount.toFixed(2)}</td>
+                          <td>
+                            <span className={`status-badge ${order.status.toLowerCase()}`}>
+                              {order.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           )}

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Footer.css';
 
 const SocialIcon = ({ d }: { d: string }) => (
@@ -36,71 +36,59 @@ const FOOTER_LINKS = {
   ],
 };
 
+const UTILITY_PATHS = ['/checkout', '/cart', '/orders', '/profile'];
+
 const Footer = () => {
+  const { pathname } = useLocation();
+  const isUtility = UTILITY_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'));
+
   return (
     <footer className="footer">
       <div className="footer-container">
-        <section className="footer-hero">
-          <div className="footer-hero-copy">
-            <p className="footer-eyebrow">CAGURA</p>
-            <h2>Everyday essentials, presented with a little more calm.</h2>
-            <p>
-              The refreshed storefront pairs editorial storytelling with practical shopping tools, so customers can move from discovery to checkout with less friction.
-            </p>
-          </div>
-
-          <div className="footer-signup-card">
-            <span className="footer-signup-label">Join the list</span>
-            <h3>Get launch drops, curated edits, and premium deals first.</h3>
-            <form className="footer-signup-form" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="Enter your email" required />
-              <button type="submit" className="btn btn-primary">Sign Up</button>
-            </form>
-          </div>
-        </section>
-
-        <section className="footer-main">
-          <div className="footer-brand">
-            <h2 className="footer-logo">CAGURA</h2>
-            <p className="footer-desc">
-              Premium lifestyle and tech essentials selected for comfort, utility, and a softer shopping experience across desktop and mobile.
-            </p>
-            <div className="social-links">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-link">
-                <SocialIcon d={ICONS.instagram} />
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="social-link">
-                <SocialIcon d={ICONS.facebook} />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="social-link">
-                <SocialIcon d={ICONS.twitter} />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="social-link">
-                <SocialIcon d={ICONS.youtube} />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="social-link">
-                <SocialIcon d={ICONS.linkedin} />
-              </a>
-            </div>
-          </div>
-
-          <div className="footer-links-grid">
-            {Object.entries(FOOTER_LINKS).map(([title, links]) => (
-              <div key={title} className="footer-links-col">
-                <h3 className="footer-title">{title}</h3>
-                <ul>
-                  {links.map((link) => (
-                    <li key={link.label}>
-                      <Link to={link.to}>{link.label}</Link>
-                    </li>
-                  ))}
-                </ul>
+        {!isUtility && (
+          <section className="footer-main">
+            <div className="footer-brand">
+              <h2 className="footer-logo">CAGURA</h2>
+              <p className="footer-desc">
+                Premium lifestyle and tech essentials selected for comfort, utility, and a softer shopping experience across desktop and mobile.
+              </p>
+              <div className="social-links">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-link">
+                  <SocialIcon d={ICONS.instagram} />
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="social-link">
+                  <SocialIcon d={ICONS.facebook} />
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="social-link">
+                  <SocialIcon d={ICONS.twitter} />
+                </a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="social-link">
+                  <SocialIcon d={ICONS.youtube} />
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="social-link">
+                  <SocialIcon d={ICONS.linkedin} />
+                </a>
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
 
-        <div className="footer-bottom">
+            <div className="footer-links-grid">
+              {Object.entries(FOOTER_LINKS).map(([title, links]) => (
+                <div key={title} className="footer-links-col">
+                  <h3 className="footer-title">{title}</h3>
+                  <ul>
+                    {links.map((link) => (
+                      <li key={link.label}>
+                        <Link to={link.to}>{link.label}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className={`footer-bottom ${isUtility ? 'footer-bottom-only' : ''}`}>
           <p>&copy; {new Date().getFullYear()} CAGURA. All rights reserved.</p>
           <div className="footer-legal">
             <Link to="/info/privacy">Privacy Policy</Link>

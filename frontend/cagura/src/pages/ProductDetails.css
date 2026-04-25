@@ -420,6 +420,28 @@
   margin-bottom: 2rem;
 }
 
+.btn-write-review {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #f4b740 0%, #e09c20 100%);
+  color: #1a1208;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(244, 183, 64, 0.35);
+  transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.btn-write-review:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 16px rgba(244, 183, 64, 0.45);
+  transform: translateY(-1px);
+}
+
 .detail-reviews-header h2 {
   font-size: clamp(1.8rem, 3.5vw, 2.5rem);
   letter-spacing: -0.05em;

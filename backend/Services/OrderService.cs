@@ -20,7 +20,7 @@ namespace backend.Services
             _emailService = emailService;
         }
 
-        public async Task<ApiResponse<OrderResponseDto>> CreateOrderAsync(int userId)
+        public async Task<ApiResponse<OrderResponseDto>> CreateOrderAsync(int userId, OrderCreateDto dto)
         {
             try
             {
@@ -38,6 +38,8 @@ namespace backend.Services
                     OrderDate = DateTime.UtcNow,
                     Status = "Pending",
                     TotalAmount = cart.TotalAmount,
+                    ShippingAddress = dto.ShippingAddress,
+                    PaymentMethod = dto.PaymentMethod,
                     OrderItems = new List<OrderItem>()
                 };
 
@@ -204,6 +206,31 @@ namespace backend.Services
             }
         }
 
+        public async Task<ApiResponse<OrderResponseDto>> CancelOrderAsync(int orderId, int userId)
+        {
+            try
+            {
+                var order = await _orderRepository.GetByIdAsync(orderId);
+                if (order == null)
+                    return ApiResponse<OrderResponseDto>.ErrorResult("Order not found");
+
+                if (order.UserId != userId)
+                    return ApiResponse<OrderResponseDto>.ErrorResult("Access denied");
+
+                if (!order.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                    return ApiResponse<OrderResponseDto>.ErrorResult("Only pending orders can be cancelled");
+
+                order.Status = "Cancelled";
+                await _orderRepository.UpdateAsync(order);
+
+                return ApiResponse<OrderResponseDto>.SuccessResult(MapToResponseDto(order), "Order cancelled successfully");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<OrderResponseDto>.ErrorResult($"Failed to cancel order: {ex.Message}");
+            }
+        }
+
         private static OrderResponseDto MapToResponseDto(Order order)
         {
             var orderItems = order.OrderItems.Select(oi => new OrderItemResponseDto
@@ -222,6 +249,8 @@ namespace backend.Services
                 CreatedAt = order.OrderDate,
                 Status = order.Status,
                 TotalAmount = order.TotalAmount,
+                ShippingAddress = order.ShippingAddress ?? string.Empty,
+                PaymentMethod = order.PaymentMethod,
                 Items = orderItems,
                 ItemCount = orderItems.Sum(i => i.Quantity)
             };
