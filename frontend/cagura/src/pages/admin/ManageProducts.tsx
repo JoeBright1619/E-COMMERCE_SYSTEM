@@ -66,47 +66,49 @@ const ManageProducts = () => {
           <div>Loading products...</div>
         ) : (
           <>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Stock</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map(product => (
-                  <tr key={product.id}>
-                    <td>
-                      <img src={product.imageUrl || undefined} alt={product.name} className="table-img" />
-                    </td>
-                    <td>{product.name}</td>
-                    <td>{product.categoryName}</td>
-                    <td>${product.price.toFixed(2)}</td>
-                    <td>{product.stockQuantity}</td>
-                    <td>{product.isActive ? 'Active' : 'Inactive'}</td>
-                    <td>
-                      <div className="action-buttons">
-                        <button className="icon-btn edit-btn" title="Edit">
-                          <Edit2 size={18} />
-                        </button>
-                        <button
-                          className="icon-btn delete-btn"
-                          title="Delete"
-                          onClick={() => handleDelete(product.id)}
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
+            <div style={{ overflowX: 'auto' }}>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {products.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map(product => (
+                    <tr key={product.id}>
+                      <td>
+                        <img src={product.imageUrl || undefined} alt={product.name} className="table-img" />
+                      </td>
+                      <td>{product.name}</td>
+                      <td>{product.categoryName}</td>
+                      <td>${product.price.toFixed(2)}</td>
+                      <td>{product.stockQuantity}</td>
+                      <td>{product.isActive ? 'Active' : 'Inactive'}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="icon-btn edit-btn" title="Edit">
+                            <Edit2 size={18} />
+                          </button>
+                          <button
+                            className="icon-btn delete-btn"
+                            title="Delete"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <Pagination
               currentPage={currentPage}
               totalItems={products.length}

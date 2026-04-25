@@ -100,8 +100,10 @@
 
 .profile-main {
   flex: 1;
+  min-width: 0;
   padding: 2rem;
   min-height: 400px;
+  overflow-x: hidden;
 }
 
 .profile-main h2 {
@@ -118,10 +120,29 @@
 .mt-2 { margin-top: 0.5rem; }
 
 @media (max-width: 768px) {
+  .profile-page {
+    padding: 7rem 1rem 3rem;
+  }
+
+  .profile-header {
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-info h1 {
+    font-size: 1.5rem;
+  }
+
   .profile-content {
     flex-direction: column;
   }
+
   .profile-sidebar {
     width: 100%;
+  }
+
+  .profile-main {
+    padding: 1.25rem;
   }
 }

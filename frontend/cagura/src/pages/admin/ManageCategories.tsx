@@ -148,33 +148,35 @@ const ManageCategories = () => {
         {loading ? (
           <div>Loading categories...</div>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((category) => (
-                <tr key={category.id}>
-                  <td>{category.name}</td>
-                  <td>{category.description || 'No description provided'}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="icon-btn edit-btn" title="Edit" onClick={() => handleEdit(category)}>
-                        <Pencil size={18} />
-                      </button>
-                      <button className="icon-btn delete-btn" title="Delete" onClick={() => handleDelete(category.id)}>
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {categories.map((category) => (
+                  <tr key={category.id}>
+                    <td>{category.name}</td>
+                    <td>{category.description || 'No description provided'}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="icon-btn edit-btn" title="Edit" onClick={() => handleEdit(category)}>
+                          <Pencil size={18} />
+                        </button>
+                        <button className="icon-btn delete-btn" title="Delete" onClick={() => handleDelete(category.id)}>
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
