@@ -3,11 +3,14 @@ import { SlidersHorizontal, Sparkles, Tag, TrendingUp } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Skeleton from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import type { CategoryResponseDto, ProductResponseDto as Product } from '../types';
 import { withDerivedProductFields } from '../utils/product';
 import './Shop.css';
+
+const PAGE_SIZE = 12;
 
 const SORT_OPTIONS = [
   { value: 'default', label: 'Recommended' },
@@ -34,6 +37,9 @@ const Shop = () => {
   const [categories, setCategories] = useState<CategoryResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOption, setSortOption] = useState('default');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => { setCurrentPage(1); }, [location.search, sortOption]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -80,6 +86,8 @@ const Shop = () => {
     if (sortOption === 'newest') return Number(second.isNew) - Number(first.isNew);
     return 0;
   });
+
+  const pagedProducts = finalProducts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const titlePrefix = view === 'new'
     ? 'Fresh'
@@ -157,8 +165,7 @@ const Shop = () => {
           <main className="shop-main">
             <div className="shop-results-header">
               <div>
-                <span className="shop-results-count">Showing {finalProducts.length} products</span>
-                <p className="shop-results-helper">Use the quick filters to keep browsing focused and light.</p>
+                <span className="shop-results-count">{finalProducts.length} product{finalProducts.length !== 1 ? 's' : ''}</span>
               </div>
 
               <label className="sort-shell">
@@ -178,30 +185,38 @@ const Shop = () => {
                 <Skeleton type="card" count={6} />
               </div>
             ) : (
-              <div className="product-grid shop-grid">
-                {finalProducts.length > 0 ? (
-                  finalProducts.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      id={product.id}
-                      name={product.name}
-                      price={product.price}
-                      imageUrl={product.imageUrl || ''}
-                      categoryName={product.categoryName}
-                      stockQuantity={product.stockQuantity}
-                      isNew={product.isNew}
-                      rating={product.averageRating}
-                      reviews={product.reviewCount}
-                    />
-                  ))
-                ) : (
-                  <div className="shop-empty-state glass-panel">
-                    <h3>No products found</h3>
-                    <p>Try a different category, reset the view, or search for a broader term.</p>
-                    <Link to="/shop" className="btn btn-secondary">Reset Shop View</Link>
-                  </div>
-                )}
-              </div>
+              <>
+                <div className="product-grid shop-grid">
+                  {pagedProducts.length > 0 ? (
+                    pagedProducts.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        id={product.id}
+                        name={product.name}
+                        price={product.price}
+                        imageUrl={product.imageUrl || ''}
+                        categoryName={product.categoryName}
+                        stockQuantity={product.stockQuantity}
+                        isNew={product.isNew}
+                        rating={product.averageRating}
+                        reviews={product.reviewCount}
+                      />
+                    ))
+                  ) : (
+                    <div className="shop-empty-state glass-panel">
+                      <h3>No products found</h3>
+                      <p>Try a different category, reset the view, or search for a broader term.</p>
+                      <Link to="/shop" className="btn btn-secondary">Reset Shop View</Link>
+                    </div>
+                  )}
+                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalItems={finalProducts.length}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={setCurrentPage}
+                />
+              </>
             )}
           </main>
         </div>

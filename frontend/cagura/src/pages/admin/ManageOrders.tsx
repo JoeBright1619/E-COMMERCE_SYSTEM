@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { orderService } from '../../services/orderService';
 import type { OrderResponseDto, UpdateStatusDto } from '../../types';
+import Pagination from '../../components/Pagination';
+
+const PAGE_SIZE = 10;
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState<OrderResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchOrders();
@@ -56,7 +60,7 @@ const ManageOrders = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
+              {orders.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map(order => (
                 <tr key={order.orderId}>
                   <td>#{order.orderId}</td>
                   <td>
@@ -74,7 +78,7 @@ const ManageOrders = () => {
                     </span>
                   </td>
                   <td>
-                    <select 
+                    <select
                       value={order.status}
                       onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
                       style={{ padding: '0.5rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -90,6 +94,12 @@ const ManageOrders = () => {
             </tbody>
           </table>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalItems={orders.length}
+          pageSize={PAGE_SIZE}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
