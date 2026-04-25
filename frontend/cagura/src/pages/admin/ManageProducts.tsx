@@ -4,10 +4,12 @@ import api from '../../services/api';
 import type { ProductResponseDto as Product } from '../../types';
 import { withDerivedProductFields } from '../../utils/product';
 import './ManageProducts.css';
+import ProductModal, { type ProductFormData } from '../../components/ProductModal';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -32,6 +34,16 @@ const ManageProducts = () => {
     }
   };
 
+  const handleAddProduct = () => {
+  setIsModalOpen(true);
+};
+
+  const handleProductSubmit = async (formData: ProductFormData) => {
+    await api.post('/products', formData);
+    setIsModalOpen(false);
+    fetchProducts();
+  };
+
   return (
     <div className="manage-products">
       <div className="admin-page-header flex-between">
@@ -39,7 +51,7 @@ const ManageProducts = () => {
           <h1>Manage Products</h1>
           <p>View, edit, or add new products to your catalog.</p>
         </div>
-        <button className="btn btn-primary flex-align-center gap-sm">
+        <button className="btn btn-primary flex-align-center gap-sm" onClick={handleAddProduct}>
           <Plus size={20} /> Add Product
         </button>
       </div>
@@ -91,6 +103,12 @@ const ManageProducts = () => {
           </table>
         )}
       </div>
+
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleProductSubmit}
+      />
     </div>
   );
 };
