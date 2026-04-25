@@ -44,8 +44,8 @@ builder.Services.AddSwaggerGen(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? "Data Source=DESKTOP-K0H6TJ3\\SQLEXPRESS;Initial Catalog=CaguraDb;Integrated Security=True;Trust Server Certificate=True";
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
+    options.UseNpgsql(connectionString));
+    
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured");
