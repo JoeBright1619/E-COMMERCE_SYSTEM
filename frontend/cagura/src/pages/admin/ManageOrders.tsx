@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { orderService } from '../../services/orderService';
-import type { OrderResponseDto } from '../../types';
+import type { OrderResponseDto, UpdateStatusDto } from '../../types';
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState<OrderResponseDto[]>([]);
