@@ -146,7 +146,12 @@ const Navbar = () => {
             />
           </form>
 
-          <Link to="/" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+          {isAuthenticated && (
+            <>
+              <Link to="/profile" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>Profile</Link>
+              <Link to="/orders" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>Orders</Link>
+            </>
+          )}
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.label}
@@ -162,20 +167,11 @@ const Navbar = () => {
 
         <div className="mobile-drawer-footer">
           {isAuthenticated && user?.role === 'Admin' && (
-            <Link to="/admin" className="mobile-auth-btn" style={{ marginBottom: '10px', background: 'var(--primary)', color: 'white' }} onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/admin" className="mobile-auth-btn" style={{ background: 'var(--accent-primary)', color: 'white' }} onClick={() => setIsMobileMenuOpen(false)}>
               Admin Panel
             </Link>
           )}
-          {isAuthenticated ? (
-            <>
-              <Link to="/orders" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
-                My Orders
-              </Link>
-              <Link to="/profile" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
-                My Profile
-              </Link>
-            </>
-          ) : (
+          {!isAuthenticated && (
             <Link to="/login" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
               Login / Register
             </Link>
