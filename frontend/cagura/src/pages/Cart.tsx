@@ -54,7 +54,9 @@ const Cart = () => {
                   type="button"
                   className="quantity-btn"
                   onClick={() => updateCartItem(item.id, item.quantity + 1)}
+                  disabled={item.quantity >= item.productStockQuantity}
                   aria-label="Increase quantity"
+                  title={item.quantity >= item.productStockQuantity ? `Only ${item.productStockQuantity} available` : undefined}
                 >
                   <Plus size={16} />
                 </button>

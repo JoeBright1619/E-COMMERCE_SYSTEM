@@ -63,8 +63,14 @@
   transform: translateY(0);
 }
 
-.product-cart-overlay:hover {
+.product-cart-overlay:not(:disabled):hover {
   background: var(--accent-primary);
+}
+
+.product-cart-overlay.out-of-stock {
+  background: var(--text-tertiary);
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 /* Badges */
@@ -80,6 +86,11 @@
   z-index: 2;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+.product-badge.stock-low {
+  background: var(--warning);
+  color: #fff;
 }
 
 .wishlist-btn {

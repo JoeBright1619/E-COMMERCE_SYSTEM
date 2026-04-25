@@ -343,6 +343,7 @@ const Home = () => {
                 price={product.price}
                 imageUrl={product.imageUrl || ''}
                 categoryName={product.categoryName}
+                stockQuantity={product.stockQuantity}
                 isNew={product.isNew}
                 rating={product.averageRating}
                 reviews={product.reviewCount}

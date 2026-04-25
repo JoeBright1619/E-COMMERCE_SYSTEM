@@ -62,6 +62,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    const existing = items.find(i => i.productId === productId);
+    if (existing) {
+      const remaining = existing.productStockQuantity - existing.quantity;
+      if (remaining <= 0) {
+        toast.error('You already have the maximum available quantity in your cart');
+        return;
+      }
+      if (quantity > remaining) {
+        toast.error(`Only ${remaining} more can be added (${existing.productStockQuantity} total available)`);
+        return;
+      }
+    }
+
     try {
       const payload: CartAddDto = { productId, quantity };
       await cartService.addItem(payload);
@@ -76,6 +89,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const updateCartItem = async (cartItemId: number, quantity: number) => {
     if (!isAuthenticated) {
       toast.error('Please log in to update your cart');
+      return;
+    }
+
+    const item = items.find(i => i.id === cartItemId);
+    if (item && quantity > item.productStockQuantity) {
+      toast.error(`Only ${item.productStockQuantity} available`);
       return;
     }
 

@@ -9,13 +9,17 @@ interface ProductCardProps {
   price: number;
   imageUrl: string;
   categoryName: string;
+  stockQuantity: number;
   isNew?: boolean;
   rating?: number;
   reviews?: number;
 }
 
-const ProductCard = ({ id, name, price, imageUrl, categoryName, isNew, rating = 4.5, reviews = 128 }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, imageUrl, categoryName, stockQuantity, isNew, rating = 4.5, reviews = 128 }: ProductCardProps) => {
   const { addToCart } = useCart();
+
+  const isOutOfStock = stockQuantity === 0;
+  const isLowStock = stockQuantity > 0 && stockQuantity <= 5;
 
   const renderStars = (rating: number) => {
     return (
@@ -35,7 +39,11 @@ const ProductCard = ({ id, name, price, imageUrl, categoryName, isNew, rating = 
   return (
     <div className="product-card">
       <div className="product-image-container">
-        {isNew && <span className="product-badge">New</span>}
+        {isLowStock ? (
+          <span className="product-badge stock-low">Only {stockQuantity} left</span>
+        ) : isNew ? (
+          <span className="product-badge">New</span>
+        ) : null}
         <button className="wishlist-btn" aria-label="Add to wishlist">
           <Heart size={16} />
         </button>
@@ -43,25 +51,26 @@ const ProductCard = ({ id, name, price, imageUrl, categoryName, isNew, rating = 
           <img src={imageUrl || undefined} alt={name} className="product-image" />
         </Link>
         <button
-          className="product-cart-overlay"
-          aria-label="Add to cart"
+          className={`product-cart-overlay${isOutOfStock ? ' out-of-stock' : ''}`}
+          aria-label={isOutOfStock ? 'Out of stock' : 'Add to cart'}
+          disabled={isOutOfStock}
           onClick={(e) => { e.preventDefault(); addToCart(id, 1); }}
         >
-          <Plus size={15} /> Add to Cart
+          {isOutOfStock ? 'Out of Stock' : <><Plus size={15} /> Add to Cart</>}
         </button>
       </div>
-      
+
       <div className="product-info">
         <span className="product-category">{categoryName}</span>
         <Link to={`/product/${id}`} className="product-title-link">
           <h3 className="product-title">{name}</h3>
         </Link>
-        
+
         <div className="product-rating">
           {renderStars(rating)}
           <span className="product-reviews">({reviews})</span>
         </div>
-        
+
         <div className="product-bottom">
           <span className="product-price">${price.toFixed(2)}</span>
           <ShoppingCart size={16} color="var(--text-tertiary)" />

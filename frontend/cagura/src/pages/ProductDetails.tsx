@@ -236,24 +236,34 @@ const ProductDetails = () => {
 
             <div className="detail-actions-row">
               <div className="detail-quantity-selector" aria-label="Quantity selector">
-                <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))} disabled={quantity <= 1 || product.stockQuantity === 0}>-</button>
                 <span>{quantity}</span>
-                <button type="button" onClick={() => setQuantity(quantity + 1)}>+</button>
+                <button type="button" onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))} disabled={quantity >= product.stockQuantity}>+</button>
               </div>
 
               <button
                 className="btn btn-primary detail-add-button"
                 onClick={() => addToCart(product.id, quantity)}
+                disabled={product.stockQuantity === 0}
               >
                 <ShoppingCart size={18} />
-                Add to Cart
+                {product.stockQuantity === 0 ? 'Out of Stock' : 'Add to Cart'}
               </button>
             </div>
+
+            {product.stockQuantity > 0 && product.stockQuantity <= 5 && (
+              <p className="detail-low-stock">Only {product.stockQuantity} left in stock</p>
+            )}
 
             <div className="detail-meta-grid">
               <div className="detail-meta-item">
                 <span className="detail-meta-label">Availability</span>
-                <span className="detail-meta-value in-stock">In Stock</span>
+                <span
+                  className="detail-meta-value"
+                  style={{ color: product.stockQuantity === 0 ? 'var(--error)' : 'var(--success)' }}
+                >
+                  {product.stockQuantity === 0 ? 'Out of Stock' : `In Stock (${product.stockQuantity})`}
+                </span>
               </div>
               <div className="detail-meta-item">
                 <span className="detail-meta-label">Delivery</span>
@@ -374,6 +384,7 @@ const ProductDetails = () => {
                 price={item.price}
                 imageUrl={item.imageUrl || ''}
                 categoryName={item.categoryName}
+                stockQuantity={item.stockQuantity}
                 isNew={item.isNew}
                 rating={item.averageRating}
                 reviews={item.reviewCount}
