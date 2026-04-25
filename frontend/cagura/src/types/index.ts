@@ -115,6 +115,7 @@ export interface CartResponseDto {
 // Order
 export interface OrderCreateDto {
     shippingAddress: string;
+    paymentMethod?: string;
 }
 
 export interface OrderItemResponseDto {
