@@ -17,4 +17,8 @@ export const orderService = {
   async updateStatus(id: number, payload: UpdateStatusDto): Promise<void> {
     await api.put(`/orders/${id}/status`, payload);
   },
+
+  async cancel(id: number): Promise<void> {
+    await api.post(`/orders/${id}/cancel`);
+  },
 };

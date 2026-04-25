@@ -133,6 +133,7 @@ export interface OrderResponseDto {
     totalAmount: number;
     status: string;
     shippingAddress: string;
+    paymentMethod?: string;
     createdAt: string;
     itemCount: number;
     items: OrderItemResponseDto[];

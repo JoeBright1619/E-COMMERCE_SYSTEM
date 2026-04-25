@@ -18,12 +18,12 @@ namespace backend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateOrder()
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDto dto)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var result = await _orderService.CreateOrderAsync(userId);
+                var result = await _orderService.CreateOrderAsync(userId, dto);
                 if (result.Success)
                 {
                     return CreatedAtAction(nameof(GetOrderById), new { id = result.Data?.OrderId }, result);
@@ -105,6 +105,24 @@ namespace backend.Controllers
                 {
                     return Ok(result);
                 }
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<OrderResponseDto>.ErrorResult($"Internal server error: {ex.Message}"));
+            }
+        }
+
+        [HttpPost("{id}/cancel")]
+        [Authorize]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                var result = await _orderService.CancelOrderAsync(id, userId);
+                if (result.Success)
+                    return Ok(result);
                 return BadRequest(result);
             }
             catch (Exception ex)

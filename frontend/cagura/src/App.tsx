@@ -19,6 +19,7 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Orders from './pages/Orders';
 
 // Admin Pages
 import Dashboard from './pages/admin/Dashboard';
@@ -64,6 +65,7 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/orders" element={<Orders />} />
                 </Route>
               </Route>
 

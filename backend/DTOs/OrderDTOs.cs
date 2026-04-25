@@ -7,6 +7,9 @@ namespace backend.DTOs
         [Required]
         [StringLength(500)]
         public string ShippingAddress { get; set; } = string.Empty;
+
+        [StringLength(100)]
+        public string? PaymentMethod { get; set; }
     }
 
     public class OrderItemResponseDto
@@ -26,6 +29,7 @@ namespace backend.DTOs
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public string ShippingAddress { get; set; } = string.Empty;
+        public string? PaymentMethod { get; set; }
         public DateTime CreatedAt { get; set; }
         public int ItemCount { get; set; }
         public IEnumerable<OrderItemResponseDto> Items { get; set; } = new List<OrderItemResponseDto>();

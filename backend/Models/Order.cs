@@ -17,6 +17,9 @@ namespace backend.Models
         [StringLength(500)]
         public string? ShippingAddress { get; set; }
 
+        [StringLength(100)]
+        public string? PaymentMethod { get; set; }
+
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         // Foreign keys

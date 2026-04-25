@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShoppingCart, Search, User, Menu, X, Shield } from 'lucide-react';
+import { ShoppingCart, Search, User, Menu, X, Shield, Package } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -85,6 +85,13 @@ const Navbar = () => {
               </Link>
             )}
 
+            {isAuthenticated && (
+              <Link to="/orders" className="action-link" aria-label="My Orders" title="My Orders">
+                <Package size={18} />
+                <span className="action-label">Orders</span>
+              </Link>
+            )}
+
             {isAuthenticated ? (
               <Link to="/profile" className="action-link" aria-label="Profile" title="Profile">
                 <User size={18} />
@@ -160,9 +167,14 @@ const Navbar = () => {
             </Link>
           )}
           {isAuthenticated ? (
-            <Link to="/profile" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
-              My Profile & Orders
-            </Link>
+            <>
+              <Link to="/orders" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
+                My Orders
+              </Link>
+              <Link to="/profile" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
+                My Profile
+              </Link>
+            </>
           ) : (
             <Link to="/login" className="mobile-auth-btn" onClick={() => setIsMobileMenuOpen(false)}>
               Login / Register
