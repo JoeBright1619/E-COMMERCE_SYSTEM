@@ -21,7 +21,12 @@ const Login = () => {
     try {
       const data = (await api.post('/auth/login', { email, password })) as any;
       login(data);
-      navigate('/');
+      
+      if (data.user?.role === 'Admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Invalid email or password');
     } finally {
