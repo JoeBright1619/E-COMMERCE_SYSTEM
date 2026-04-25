@@ -40,7 +40,7 @@ const ProductCard = ({ id, name, price, imageUrl, categoryName, isNew, rating = 
           <Heart size={16} />
         </button>
         <Link to={`/product/${id}`}>
-          <img src={imageUrl} alt={name} className="product-image" />
+          <img src={imageUrl || undefined} alt={name} className="product-image" />
         </Link>
         <button
           className="product-cart-overlay"
