@@ -1,92 +1,120 @@
-# 🛒 CAGURA E-Commerce System
+<div align="center">
+  <img src="./frontend/cagura/public/assets/hero_bg.png" alt="CAGURA Banner" width="100%" style="border-radius: 10px;" />
+  <br/>
+  <h1>🛍️ CAGURA E-Commerce System</h1>
+  <p><strong>A Premium Full-Stack E-Commerce Platform</strong></p>
+  
+  [![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)](#)
+  [![Backend](https://img.shields.io/badge/Backend-Render-blue?logo=render)](#)
+  [![.NET](https://img.shields.io/badge/.NET-10.0-purple?logo=dotnet)](#)
+  [![React](https://img.shields.io/badge/React-18-blue?logo=react)](#)
+</div>
 
-Welcome to the **CAGURA E-Commerce System** repository! This is a full-stack, web-based E-Commerce platform built using modern client-server architecture. It supports customers browsing, adding to cart, and placing orders, as well as an admin portal for managing the store.
+<br/>
 
-This project is broken into a deeply documented ASP.NET Core backend API and a React Single-Page Application frontend.
+## ✨ Overview
 
----
+Welcome to the **CAGURA E-Commerce System**. This project is a complete, end-to-end e-commerce solution built with a modern, decoupled architecture. It features a beautifully designed React frontend and a robust, high-performance C# .NET 10 backend. 
 
-## 📖 Official Documentation
+CAGURA is designed to provide a seamless shopping experience for customers and a comprehensive management dashboard for administrators.
 
-To fully understand this platform, please refer to our dedicated `docs/` folder. We have maintained complete documentation detailing architecture, API contracts, databases, and requirements.
-
-| Document | Topic |
-| :--- | :--- |
-| [`docs/01-overview.md`](./docs/01-overview.md) | High-level project scope, goals, and technical stack. |
-| [`docs/02-requirements.md`](./docs/02-requirements.md) | Full tracing of Functional and Non-Functional requirements. |
-| [`docs/03-architecture.md`](./docs/03-architecture.md) | Our 4-layer backend architecture and React SPA data flows. |
-| [`docs/04-database.md`](./docs/04-database.md) | SQL Server database schemas, ERD, and EF Core decisions. |
-| [`docs/api/05-api.md`](./docs/api/05-api.md) | The master RESTful API contract for the frontend to consume. |
-| [`docs/06-team.md`](./docs/06-team.md) | Team structure, responsibilities, and our internal workflows. |
-| [`docs/07-setup.md`](./docs/07-setup.md) | **Step-by-step instructions for running this application locally.** |
-
----
-
-## 💻 Codebase Structure
-
-The code is strictly separated into independent environments:
-
-- **[`/backend`](./backend/README.md):** The ASP.NET Core Web API. (See its inner `README` for backend coding standards).
-- **[`/frontend/cagura`](./frontend/cagura/README.md):** The modern Vite + React + TypeScript frontend. (See its inner `README` for frontend coding standards).
-- **[`/legacy`](./legacy):** An archived prototype using basic HTML and JS. It remains for reference purposes only.
+### 🌐 Live Deployments
+* **Frontend (Vercel):** [https://e-commerce-system-ten.vercel.app](https://e-commerce-system-ten.vercel.app)
+* **Backend API (Render):** [https://e-commerce-system-7tlc.onrender.com/swagger](https://e-commerce-system-7tlc.onrender.com/swagger)
 
 ---
 
-## 🛠 Team Collaboration & Git Best Practices
+## 🛠️ Technology Stack
 
-> **CRITICAL:** We enforce a strict workflow to ensure our `develop` branch remains stable for integration, and our `master` branch is protected for production. All developers **MUST** read and follow the collaboration strategy detailed in [`docs/06-team.md`](./docs/06-team.md).
+### Frontend (Client-Side)
+* **Framework:** React 18 with TypeScript
+* **Build Tool:** Vite
+* **Styling:** Custom CSS with responsive, modern design (Glassmorphism & animations)
+* **State Management:** React Context API (AuthContext, CartContext)
+* **Routing:** React Router v6
+* **Hosting:** Vercel (CI/CD Integrated)
 
-Here is a summary of our non-negotiable Git practices:
+### Backend (Server-Side)
+* **Framework:** C# ASP.NET Core 10.0 Web API
+* **Database:** PostgreSQL (Hosted on Neon)
+* **ORM:** Entity Framework Core
+* **Authentication:** JWT (JSON Web Tokens) with BCrypt hashing
+* **Media Storage:** Cloudinary
+* **Email Service:** MailKit (SMTP)
+* **Hosting:** Render (Dockerized Container)
 
-### 1. Branch Naming
-Never commit directly to `master` or `develop`. Always create a new branch from `develop` for your work.
-Include the type of work in your branch name:
-- `feature/short-description` (e.g., `feature/product-reviews`)
-- `fix/short-description` (e.g., `fix/cart-calculation`)
+---
 
-### 2. Commit Messages
-We use **Conventional Commits** and mandate specifying whether the change is for the frontend or backend. Your commit message must clearly explain what was done.
-- `feat(frontend): add user registration UI logic`
-- `fix(backend): resolve cors issue on login endpoint`
-- `docs(backend): update api endpoint schemas`
-- `refactor(frontend): move token generation to helpers folder`
+## 🚀 Key Features
 
-### 3. Merging & Communication
-Since this is a class project, we are bypassing strict Pull Requests (PRs) in favor of keeping things direct. When your feature is complete, you will merge your branch into `develop`. **Never merge into `master`**—only the team lead handles `master` merges.
+### For Customers
+* **Secure Authentication:** JWT-based login and registration.
+* **Product Catalog:** Browse, search, and filter premium products by category.
+* **Dynamic Shopping Cart:** Add items, adjust quantities, and see real-time price calculations.
+* **Responsive Design:** A flawless shopping experience on both mobile and desktop screens.
+* **Order History:** View past orders and current order statuses.
 
-**Crucially, you must communicate with the team immediately after merging.** If you run into merge conflicts, reach out to the team to resolve them together so you don't overwrite someone else's work.
+### For Administrators
+* **Admin Dashboard:** A centralized control panel for managing the entire store.
+* **Product Management:** Create, edit, delete, and upload product images directly to Cloudinary.
+* **Order Fulfillment:** Track customer orders and update their statuses (Pending, Shipped, Delivered).
+* **User Management:** View customer details and manage platform access.
 
-### 4. Step-by-Step Git Commands Guide
+---
 
-Here is exactly what you need to type in your terminal to safely contribute:
+## 📂 Project Structure
 
-**1. Update your local machine and create a new branch:**
-```bash
-git checkout develop
-git pull origin develop
-git checkout -b feature/your-feature-name
+The repository is strictly divided into decoupled environments:
+
+```text
+E-COMMERCE_SYSTEM/
+├── backend/                  # C# .NET 10 Web API
+│   ├── Controllers/          # API Route Handlers
+│   ├── Models/               # Database Entities
+│   ├── Services/             # Business Logic (Cloudinary, Email, Auth)
+│   ├── Data/                 # EF Core DbContext & Migrations
+│   └── Dockerfile            # Production Docker Image Config
+│
+├── frontend/cagura/          # React + Vite Single Page Application
+│   ├── src/
+│   │   ├── components/       # Reusable UI Components
+│   │   ├── pages/            # Page Views (Home, Shop, Admin Dashboard)
+│   │   ├── services/         # Axios API Integrations
+│   │   └── contexts/         # Global State Management
+│   └── package.json          # Frontend Dependencies
+│
+└── docs/                     # Architectural Documentation
 ```
 
-**2. Make your changes and commit them:**
-```bash
-git add .
-git commit -m "feat(frontend): describe your feature here"
-```
+---
 
-**3. Merge your branch into develop and push:**
-```bash
-git checkout develop
-git pull origin develop              # Fetch any new changes your teammates made
-git merge feature/your-feature-name  # Merge your work
-git push origin develop              # Push the updated develop branch to GitHub
-```
+## ⚙️ CI/CD Pipeline & DevOps
 
-### 5. API Contracts
-If your feature relies on data structures that haven't been completed by the backend yet, coordinate with the backend lead. Do not build UI on completely random data schemas—stick to the models defined in [`docs/api`](./docs/api/05-api.md).
+This project utilizes modern DevOps practices to ensure continuous integration and deployment:
+
+1. **Frontend Pipeline:** 
+   - Connected directly to GitHub via **Vercel**.
+   - Pushes to the `master` branch automatically trigger a production build.
+2. **Backend Pipeline:** 
+   - Connected via **Render**.
+   - Uses a custom `.NET 10.0` `Dockerfile` to build and containerize the application.
+   - Pushes to the `backend` tracking branch automatically trigger a zero-downtime deployment.
+3. **Environment Management:** 
+   - All sensitive secrets (JWT Keys, Database URLs, Cloudinary APIs) are strictly managed via Cloud Environment Variables, preventing hardcoded credentials in the repository.
 
 ---
 
-## 🚀 Getting Started
+## 👥 Collaboration & Workflow
 
-If you are a new developer setting up your machine for the first time, skip straight to:
-👉 **[The Official Project Setup Instructions](./docs/07-setup.md)**
+This project follows a strict branching and collaboration strategy:
+- `master`: Protected branch. Represents the live, production-ready code.
+- `develop`: Integration branch. All feature branches merge here first for testing.
+- `feature/*`: Branches dedicated to building new features.
+- `backend`: Deployment tracking branch for the Render backend service.
+
+> **Note for Contributors:** Never commit directly to `master`. Always create a feature branch, submit a Pull Request, and ensure all tests and builds pass before merging.
+
+---
+<div align="center">
+  <i>Built with passion and modern web technologies.</i>
+</div>
