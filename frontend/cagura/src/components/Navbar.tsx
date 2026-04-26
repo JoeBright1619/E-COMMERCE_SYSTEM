@@ -40,89 +40,91 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar glass-panel">
-      <div className="navbar-promo">
-        Free shipping on orders over $100 and easy 30-day returns.
-      </div>
+    <>
+      <nav className="navbar glass-panel">
+        <div className="navbar-promo">
+          Free shipping on orders over $100 and easy 30-day returns.
+        </div>
 
-      <div className="navbar-main">
-        <div className="navbar-container">
-          <div className="navbar-logo">
-            <Link to="/">
-              <span className="logo-text">CAGURA</span>
-              <span className="logo-tag">Everyday Essentials</span>
-            </Link>
-          </div>
+        <div className="navbar-main">
+          <div className="navbar-container">
+            <div className="navbar-logo">
+              <Link to="/">
+                <span className="logo-text">CAGURA</span>
+                <span className="logo-tag">Everyday Essentials</span>
+              </Link>
+            </div>
 
-          <div className="navbar-links">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.label}
-                to={item.to}
-                className={`nav-link ${item.className ?? ''} ${isActiveLink(item.to) ? 'active' : ''}`}
+            <div className="navbar-links">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  className={`nav-link ${item.className ?? ''} ${isActiveLink(item.to) ? 'active' : ''}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="navbar-actions">
+              <form onSubmit={handleSearchSubmit} className="search-shell desktop-search">
+                <Search size={18} />
+                <input
+                  type="text"
+                  placeholder="Search Product"
+                  className="search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </form>
+
+              {isAuthenticated && user?.role === 'Admin' && (
+                <Link to="/admin" className="action-link" aria-label="Admin Panel" title="Admin Panel">
+                  <Shield size={18} />
+                  <span className="action-label">Admin</span>
+                </Link>
+              )}
+
+              {isAuthenticated && (
+                <Link to="/orders" className="action-link" aria-label="My Orders" title="My Orders">
+                  <Package size={18} />
+                  <span className="action-label">Orders</span>
+                </Link>
+              )}
+
+              {isAuthenticated ? (
+                <Link to="/profile" className="action-link" aria-label="Profile" title="Profile">
+                  <User size={18} />
+                  <span className="action-label">Profile</span>
+                </Link>
+              ) : (
+                <Link to="/login" className="action-link" aria-label="Account" title="Account">
+                  <User size={18} />
+                  <span className="action-label">Account</span>
+                </Link>
+              )}
+
+              <Link to="/cart" className="action-link cart-link" aria-label="Cart" title="Cart">
+                <ShoppingCart size={18} />
+                <span className="action-label">Cart</span>
+                {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+              </Link>
+
+              <button
+                className="icon-btn mobile-menu"
+                aria-label="Menu"
+                title="Menu"
+                onClick={() => setIsMobileMenuOpen(true)}
               >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="navbar-actions">
-            <form onSubmit={handleSearchSubmit} className="search-shell desktop-search">
-              <Search size={18} />
-              <input
-                type="text"
-                placeholder="Search Product"
-                className="search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-
-            {isAuthenticated && user?.role === 'Admin' && (
-              <Link to="/admin" className="action-link" aria-label="Admin Panel" title="Admin Panel">
-                <Shield size={18} />
-                <span className="action-label">Admin</span>
-              </Link>
-            )}
-
-            {isAuthenticated && (
-              <Link to="/orders" className="action-link" aria-label="My Orders" title="My Orders">
-                <Package size={18} />
-                <span className="action-label">Orders</span>
-              </Link>
-            )}
-
-            {isAuthenticated ? (
-              <Link to="/profile" className="action-link" aria-label="Profile" title="Profile">
-                <User size={18} />
-                <span className="action-label">Profile</span>
-              </Link>
-            ) : (
-              <Link to="/login" className="action-link" aria-label="Account" title="Account">
-                <User size={18} />
-                <span className="action-label">Account</span>
-              </Link>
-            )}
-
-            <Link to="/cart" className="action-link cart-link" aria-label="Cart" title="Cart">
-              <ShoppingCart size={18} />
-              <span className="action-label">Cart</span>
-              {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
-            </Link>
-
-            <button
-              className="icon-btn mobile-menu"
-              aria-label="Menu"
-              title="Menu"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={22} />
-            </button>
+                <Menu size={22} />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      <div className={`mobile-drawer-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+      <div className={`mobile-drawer-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)} />
       <div className={`mobile-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-drawer-header">
           <div>
@@ -178,7 +180,7 @@ const Navbar = () => {
           )}
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 

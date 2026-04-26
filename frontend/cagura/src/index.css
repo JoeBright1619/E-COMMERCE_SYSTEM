@@ -39,6 +39,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 body {
@@ -84,23 +89,6 @@ img {
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(180, 220, 235, 0.7);
   border-radius: var(--border-radius-lg);
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: #a8cdd8;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #7fb5c5;
 }
 
 .btn {
